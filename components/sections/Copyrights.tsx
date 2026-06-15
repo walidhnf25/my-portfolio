@@ -198,7 +198,7 @@ export default function Copyrights() {
                   "Dashboard Systems",
                   "Management Platforms",
                   "Analytics Tools",
-                  "Mobile & Web Apps",
+                  "Web Apps",
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-2">
                     <span className="text-[#DA291C] font-serif">•</span>

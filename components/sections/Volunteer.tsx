@@ -284,24 +284,6 @@ export default function Volunteer() {
               </div>
             </div>
 
-            {/* Key Achievements */}
-            <div className="mt-4 sm:mt-6 p-3 sm:p-4 border border-[#ddd]">
-              <h4 className="text-[9px] xs:text-[10px] tracking-widest uppercase font-bold text-black mb-2 sm:mb-3">
-                Key Achievements
-              </h4>
-              <div className="space-y-2">
-                {[
-                  "Led team of 15+ volunteers",
-                  "Organized events for 100+ participants",
-                  "Coordinated cross-department collaboration",
-                ].map((item, i) => (
-                  <div key={i} className="flex items-start gap-2">
-                    <span className="text-[#DA291C] font-serif text-sm">✓</span>
-                    <span className="font-serif text-[11px] sm:text-xs text-[#444]">{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
           </motion.div>
         </div>
 

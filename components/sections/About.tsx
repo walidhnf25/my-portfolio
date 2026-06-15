@@ -50,7 +50,7 @@ export default function About() {
           </div>
 
           {/* Subheader */}
-          <div className="flex flex-wrap items-center justify-center sm:justify-between gap-2 sm:gap-4 text-[8px] xs:text-[9px] sm:text-[10px] tracking-[0.1em] sm:tracking-[0.15em] uppercase text-[#666] mt-2 sm:mt-3">
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-[8px] xs:text-[9px] sm:text-[10px] tracking-widest sm:tracking-[0.2em] uppercase text-[#666] mt-2 sm:mt-3">
             <span>Software Engineering Graduate</span>
             <span className="w-1 h-1 rounded-full bg-[#DA291C] shrink-0" />
             <span>Research & Development</span>

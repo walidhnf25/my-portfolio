@@ -317,14 +317,24 @@ export default function Projects() {
                     Total Projects
                   </p>
                 </div>
-                <div className="border-t border-[#333] pt-3 sm:pt-4 grid grid-cols-2 gap-3">
+                <div className="border-t border-[#333] pt-3 sm:pt-4 grid grid-cols-2 gap-2">
                   <div className="text-center">
-                    <p className="text-lg sm:text-xl font-bold text-white">7</p>
+                    <p className="text-lg sm:text-xl font-bold text-white">9</p>
                     <p className="text-[7px] xs:text-[8px] sm:text-[9px] uppercase text-[#666]">Web Apps</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-lg sm:text-xl font-bold text-white">6</p>
+                    <p className="text-lg sm:text-xl font-bold text-white">4</p>
                     <p className="text-[7px] xs:text-[8px] sm:text-[9px] uppercase text-[#666]">Mobile Apps</p>
+                  </div>
+                </div>
+                <div className="border-t border-[#333] pt-3 sm:pt-4 grid grid-cols-2 gap-2">
+                  <div className="text-center">
+                    <p className="text-lg sm:text-xl font-bold text-white">11</p>
+                    <p className="text-[7px] xs:text-[8px] sm:text-[9px] uppercase text-[#666]">Developer</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-lg sm:text-xl font-bold text-white">2</p>
+                    <p className="text-[7px] xs:text-[8px] sm:text-[9px] uppercase text-[#666]">Project Manager</p>
                   </div>
                 </div>
               </div>
@@ -389,7 +399,7 @@ export default function Projects() {
                 <span className="font-serif text-xl sm:text-2xl font-black text-black">2026</span>
               </div>
               <p className="text-[8px] xs:text-[9px] sm:text-[10px] text-center tracking-widest uppercase text-[#666] mt-1">
-                2+ Years of Development
+                2+ Years of Experience
               </p>
             </div>
           </motion.div>

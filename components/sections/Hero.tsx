@@ -160,11 +160,11 @@ export default function Hero() {
               </h3>
               <div className="grid grid-cols-3 gap-2 sm:gap-4">
                 <div className="text-center">
-                  <p className="font-serif text-2xl xs:text-3xl sm:text-3xl md:text-4xl font-black text-[#DA291C]">3+</p>
+                  <p className="font-serif text-2xl xs:text-3xl sm:text-3xl md:text-4xl font-black text-[#DA291C]">7+</p>
                   <p className="text-[8px] xs:text-[9px] sm:text-[10px] tracking-[0.1em] sm:tracking-[0.15em] uppercase text-[#999] mt-1">Publications</p>
                 </div>
                 <div className="text-center border-x border-[#333]">
-                  <p className="font-serif text-2xl xs:text-3xl sm:text-3xl md:text-4xl font-black text-[#DA291C]">5+</p>
+                  <p className="font-serif text-2xl xs:text-3xl sm:text-3xl md:text-4xl font-black text-[#DA291C]">12+</p>
                   <p className="text-[8px] xs:text-[9px] sm:text-[10px] tracking-[0.1em] sm:tracking-[0.15em] uppercase text-[#999] mt-1">Research Projects</p>
                 </div>
                 <div className="text-center">

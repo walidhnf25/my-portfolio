@@ -220,17 +220,13 @@ export default function Awards() {
                     Total Awards
                   </p>
                 </div>
-                <div className="border-t border-[#333] pt-3 sm:pt-4 grid grid-cols-3 gap-2">
+                <div className="border-t border-[#333] pt-3 sm:pt-4 grid grid-cols-2 gap-2">
                   <div className="text-center">
                     <p className="text-lg sm:text-xl font-bold text-white">1</p>
-                    <p className="text-[7px] xs:text-[8px] sm:text-[9px] uppercase text-[#666]">Graduate</p>
+                    <p className="text-[7px] xs:text-[8px] sm:text-[9px] uppercase text-[#666]">Achievement</p>
                   </div>
                   <div className="text-center">
-                    <p className="text-lg sm:text-xl font-bold text-white">1</p>
-                    <p className="text-[7px] xs:text-[8px] sm:text-[9px] uppercase text-[#666]">Finalist</p>
-                  </div>
-                  <div className="text-center">
-                    <p className="text-lg sm:text-xl font-bold text-white">7</p>
+                    <p className="text-lg sm:text-xl font-bold text-white">8</p>
                     <p className="text-[7px] xs:text-[8px] sm:text-[9px] uppercase text-[#666]">Competition</p>
                   </div>
                 </div>

@@ -277,7 +277,7 @@ export default function Publications() {
                 </div>
                 <div className="border-t border-[#333] pt-3 sm:pt-4">
                   <div className="text-center">
-                    <p className="text-lg sm:text-xl font-bold text-white">4</p>
+                    <p className="text-lg sm:text-xl font-bold text-white">3</p>
                     <p className="text-[7px] xs:text-[8px] sm:text-[9px] uppercase text-[#666]">1st Author</p>
                   </div>
                 </div>

@@ -192,8 +192,6 @@ export default function Education() {
                   "Information Technology Adoption",
                   "Machine Learning & Deep Learning",
                   "Internet of Things (IoT)",
-                  "Data-Driven Solutions",
-                  "Research Methodology",
                 ].map((item, i) => (
                   <li key={i} className="flex items-start gap-2">
                     <span className="text-[#DA291C] font-serif">•</span>
