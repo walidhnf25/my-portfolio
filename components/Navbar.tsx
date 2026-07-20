@@ -52,7 +52,10 @@ export default function Navbar() {
             : "border-b border-transparent bg-transparent"
         )}
       >
-        <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        {/* Extra right padding on phones only: the ScrollRat column runs down
+            that edge, and its house sits level with the theme toggle. From sm up
+            the centred max-w-6xl container already clears it. */}
+        <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 pr-11 sm:px-6 lg:px-8">
           <button
             onClick={() => go("#home")}
             aria-label="Walid Hanif Ataullah, back to top"

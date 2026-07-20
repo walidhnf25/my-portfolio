@@ -141,11 +141,29 @@ export function StairClimber() {
 
       {/* Celebration sparkles */}
       {SPARKS.map((sp, i) => (
-        <path key={i} className={`spark ${sp.c}`} d={SPARK} transform={`translate(${sp.x} ${sp.y}) scale(${sp.s})`} />
+        <path
+          key={i}
+          className={`spark ${sp.c}`}
+          opacity={0}
+          d={SPARK}
+          transform={`translate(${sp.x} ${sp.y}) scale(${sp.s})`}
+        />
       ))}
 
-      {/* Stickman */}
-      <g id="climber" className="text-accent" stroke="currentColor" strokeWidth={4} strokeLinecap="round" fill="none">
+      {/* Stickman.
+          The starting pose is baked into the markup, not left to the timeline:
+          GSAP only runs after the first paint, so without it the climber renders
+          at the svg origin — off in the corner, trophy already raised, every
+          spark lit — and then snaps onto the bottom stair. */}
+      <g
+        id="climber"
+        transform={`translate(${STEPS[0].x} ${hipY(STEPS[0])})`}
+        className="text-accent"
+        stroke="currentColor"
+        strokeWidth={4}
+        strokeLinecap="round"
+        fill="none"
+      >
         {/* legs */}
         <line id="legBack" x1={0} y1={0} x2={-9} y2={20} />
         <line id="legFront" x1={0} y1={0} x2={10} y2={20} />
@@ -158,7 +176,7 @@ export function StairClimber() {
         <circle cx={0} cy={-33} r={7} fill="currentColor" stroke="none" />
 
         {/* raised trophy (hidden until the summit) */}
-        <g id="trophy" fill="currentColor" stroke="none">
+        <g id="trophy" opacity={0} fill="currentColor" stroke="none">
           {/* cup */}
           <path d="M-9 -67 L9 -67 L7 -58 Q0 -52 -7 -58 Z" />
           {/* handles */}
