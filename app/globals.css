@@ -108,33 +108,14 @@ html.lenis body {
   color: var(--foreground);
 }
 
+/* ScrollRat is the page's position indicator at every width, so the native
+   vertical bar is hidden throughout. Scrolling itself is untouched. */
+html {
+  scrollbar-width: none;
+}
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: color-mix(in srgb, var(--accent) 40%, transparent);
-  border-radius: 999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--accent);
-}
-
-/* From `sm` up the ScrollRat takes over as the position indicator, so the
-   native bar is hidden. Below that the rat is not rendered and the browser's
-   own (transient, overlay) scrollbar is left alone — a touch device would
-   otherwise have no indication of where it is in the page. */
-@media (min-width: 40rem) {
-  html {
-    scrollbar-width: none;
-  }
-  ::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-  }
+  width: 0;
+  height: 0;
 }
 
 /* ---------- Utilities ---------- */

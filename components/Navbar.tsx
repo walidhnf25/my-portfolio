@@ -41,7 +41,10 @@ export default function Navbar() {
     <>
       <header
         className={cn(
-          "fixed inset-x-0 top-0 z-50 transition-all duration-300",
+          // Layer order, top down: header > menu panel > menu scrim > ScrollRat
+          // (z-60) > page. The rat has to clear the header bar, but must not
+          // float over an open menu.
+          "fixed inset-x-0 top-0 z-[75] transition-all duration-300",
           scrolled
             ? "border-b border-border bg-background/70 backdrop-blur-xl"
             : "border-b border-transparent bg-transparent"
@@ -114,14 +117,14 @@ export default function Navbar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setOpen(false)}
-              className="fixed inset-0 z-40 bg-background/60 backdrop-blur-sm lg:hidden"
+              className="fixed inset-0 z-[65] bg-background/60 backdrop-blur-sm lg:hidden"
             />
             <motion.div
               initial={{ opacity: 0, y: -12 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-x-3 top-20 z-50 rounded-2xl border border-border bg-card/90 p-3 backdrop-blur-xl lg:hidden"
+              className="fixed inset-x-3 top-20 z-[70] rounded-2xl border border-border bg-card/90 p-3 backdrop-blur-xl lg:hidden"
             >
               <div className="grid gap-1">
                 {navItems.map((item, i) => {

@@ -3,10 +3,8 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 
-// Rendered size of the rat, and how far it stays clear of the viewport edges.
 // Keep INSET small: like the native scrollbar it replaces, the rat has to be able
 // to reach the very top and the very bottom, or it under-reports the extremes.
-const RAT = 30;
 const INSET = 8;
 
 /**
@@ -22,7 +20,9 @@ const INSET = 8;
  * The leg scurry is a tween, since it is decorative: if frames stop, it simply
  * stops wiggling and nothing is misreported.
  *
- * Hidden below `sm`, where the native scrollbar is left intact — see globals.css.
+ * Shown at every width, so the native scrollbar is hidden everywhere too (see
+ * globals.css). The rat renders smaller on phones, hence measuring its height at
+ * runtime rather than hard-coding it.
  */
 export function ScrollRat() {
   const wrap = useRef<HTMLDivElement>(null);
@@ -53,7 +53,7 @@ export function ScrollRat() {
     const update = () => {
       const max = document.documentElement.scrollHeight - window.innerHeight;
       const progress = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
-      gsap.set(el, { y: progress * (window.innerHeight - RAT - INSET * 2) });
+      gsap.set(el, { y: progress * (window.innerHeight - el.offsetHeight - INSET * 2) });
 
       const delta = window.scrollY - last;
       last = window.scrollY;
@@ -93,15 +93,13 @@ export function ScrollRat() {
       // Above the navbar's z-50: at the top of the page the rat's track runs
       // behind the header, and a position indicator that disappears exactly at
       // one end of its range is worse than no indicator.
-      className="pointer-events-none fixed right-2 z-[60] hidden sm:block"
+      className="pointer-events-none fixed right-1 z-[60] block sm:right-2"
       style={{ top: INSET }}
     >
       <div ref={wrap}>
         <svg
-          width={RAT}
-          height={RAT}
           viewBox="0 0 40 26"
-          className="overflow-visible text-accent"
+          className="block h-[22px] w-[22px] overflow-visible text-accent sm:h-[30px] sm:w-[30px]"
           // Drawn facing right, stood on end so it climbs the edge head-up.
           style={{ transform: "rotate(-90deg)" }}
         >
