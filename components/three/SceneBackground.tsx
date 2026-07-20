@@ -32,8 +32,10 @@ export default function SceneBackground() {
       <div
         className="absolute inset-0"
         style={{
+          // Only a top-centered wash. An off-center glow tints translucent cards
+          // unevenly by column, making identically-styled cards look different.
           background: isDark
-            ? "radial-gradient(120% 80% at 50% -10%, rgba(229,72,77,0.10), transparent 60%), radial-gradient(90% 60% at 100% 100%, rgba(229,72,77,0.06), transparent 55%)"
+            ? "radial-gradient(120% 80% at 50% -10%, rgba(229,72,77,0.10), transparent 60%)"
             : "radial-gradient(120% 80% at 50% -10%, rgba(218,41,28,0.08), transparent 60%)",
         }}
       />

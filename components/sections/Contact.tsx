@@ -46,8 +46,10 @@ export default function Contact() {
     }
   };
 
+  // text-base on mobile is deliberate: iOS Safari zooms the viewport when a
+  // focused field's font-size is under 16px. Drop back to text-sm from sm: up.
   const inputClass =
-    "w-full rounded-xl border border-border bg-input px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 disabled:opacity-50";
+    "w-full rounded-xl border border-border bg-input px-4 py-3 text-base text-foreground placeholder:text-muted-foreground transition-colors focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 disabled:opacity-50 sm:text-sm";
 
   return (
     <section id="contact" className="section-anchor relative py-24 sm:py-32">
@@ -103,7 +105,7 @@ export default function Contact() {
                   </p>
                   <button
                     onClick={() => setStatus("idle")}
-                    className="mt-5 text-sm font-medium text-accent hover:text-accent-bright"
+                    className="mt-3 inline-flex min-h-11 items-center text-sm font-medium text-accent hover:text-accent-bright"
                   >
                     Send another message
                   </button>

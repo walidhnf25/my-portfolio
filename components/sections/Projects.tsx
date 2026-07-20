@@ -109,7 +109,7 @@ export default function Projects() {
                       href={p.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-accent transition-colors hover:text-accent-bright"
+                      className="mt-4 inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-accent transition-colors hover:text-accent-bright"
                     >
                       View project <ArrowUpRight className="h-4 w-4" />
                     </a>
@@ -120,18 +120,24 @@ export default function Projects() {
           </div>
         </div>
 
-        {/* Progress dots */}
-        <div className="mt-8 flex justify-center gap-2">
+        {/* Progress dots — the bar is the visual, the button is the (finger-sized) tap area */}
+        <div className="mt-4 flex justify-center">
           {snaps.map((_, i) => (
             <button
               key={i}
               aria-label={`Go to slide ${i + 1}`}
               onClick={() => emblaApi?.scrollTo(i)}
-              className={cn(
-                "h-1.5 rounded-full transition-all duration-300",
-                i === selected ? "w-6 bg-accent" : "w-1.5 bg-border hover:bg-muted-foreground"
-              )}
-            />
+              className="group grid h-11 w-6 place-items-center"
+            >
+              <span
+                className={cn(
+                  "block h-1.5 rounded-full transition-all duration-300",
+                  i === selected
+                    ? "w-6 bg-accent"
+                    : "w-1.5 bg-border group-hover:bg-muted-foreground"
+                )}
+              />
+            </button>
           ))}
         </div>
       </div>

@@ -68,9 +68,13 @@
   color-scheme: light;
 }
 
-* {
-  box-sizing: border-box;
-  border-color: var(--border);
+/* Must live in @layer base — unlayered rules outrank Tailwind's utility layer,
+   which would make every `border-*` color utility (and hover:border-*) a no-op. */
+@layer base {
+  * {
+    box-sizing: border-box;
+    border-color: var(--border);
+  }
 }
 
 html {

@@ -28,13 +28,13 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://aboutwal.id"),
-  title: "Walid Hanif Ataullah | Software Engineer & AI Researcher",
+  title: "Walid Hanif Ataullah | Software Engineer & ML/DL Enthusiast",
   description:
     "Bachelor's graduate in Software Engineering specializing in Information Technology Adoption, Machine Learning, Deep Learning, and Internet of Things. Explore my research publications, projects, and get in touch.",
   keywords: [
     "Walid Hanif Ataullah",
     "Software Engineer",
-    "AI Researcher",
+    "ML/DL Enthusiast",
     "Machine Learning",
     "Deep Learning",
     "IoT",
@@ -49,16 +49,16 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://aboutwal.id",
     siteName: "Walid Hanif Ataullah Portfolio",
-    title: "Walid Hanif Ataullah | Software Engineer & AI Researcher",
+    title: "Walid Hanif Ataullah | Software Engineer & ML/DL Enthusiast",
     description:
-      "Software Engineer & AI Researcher — Machine Learning, Deep Learning, and IoT. Explore my publications and projects.",
+      "Software Engineer & ML/DL Enthusiast — Machine Learning, Deep Learning, and IoT. Explore my publications and projects.",
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Walid Hanif Ataullah" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Walid Hanif Ataullah | Software Engineer & AI Researcher",
+    title: "Walid Hanif Ataullah | Software Engineer & ML/DL Enthusiast",
     description:
-      "Software Engineer & AI Researcher — Machine Learning, Deep Learning, and IoT.",
+      "Software Engineer & ML/DL Enthusiast — Machine Learning, Deep Learning, and IoT.",
     images: ["/og-image.png"],
   },
   robots: {

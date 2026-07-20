@@ -4,7 +4,7 @@ export const profile = {
   name: "Walid Hanif Ataullah",
   firstName: "Walid Hanif",
   lastName: "Ataullah",
-  roles: ["Software Engineer", "AI Researcher", "IoT Explorer"],
+  roles: ["Software Engineer", "ML/DL Enthusiast", "IoT Explorer"],
   tagline: "Building intelligent systems that bridge human needs and technology.",
   location: "Tangerang, Indonesia",
   email: "walidhnf12@gmail.com",

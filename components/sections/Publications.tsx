@@ -29,7 +29,7 @@ export default function Publications() {
           {stats.map((s) => (
             <RevealItem
               key={s.label}
-              className="rounded-2xl border border-border bg-card/50 p-5 text-center backdrop-blur-sm"
+              className="rounded-2xl border border-border bg-card/50 p-4 text-center backdrop-blur-sm sm:p-5"
             >
               <div className="font-display text-3xl font-bold text-gradient-accent sm:text-4xl">
                 {s.value}
@@ -42,18 +42,18 @@ export default function Publications() {
         </RevealGroup>
 
         {/* List */}
-        <div className="mt-8 space-y-4">
+        <div className="mt-6 space-y-3 sm:mt-8 sm:space-y-4">
           {publications.map((pub, i) => (
             <Reveal key={pub.title} delay={Math.min(i * 0.04, 0.2)}>
               <a
                 href={pub.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group block rounded-2xl border border-border bg-card/50 p-6 backdrop-blur-sm transition-all hover:border-accent/40 hover:bg-card"
+                className="group block rounded-2xl border border-border bg-card/50 p-5 backdrop-blur-sm transition-all hover:border-accent/40 hover:bg-card sm:p-6"
               >
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-4">
                   <div className="flex items-center gap-3 sm:w-28 sm:flex-col sm:items-start">
-                    <span className="font-display text-3xl font-bold text-foreground">
+                    <span className="font-display text-2xl font-bold text-foreground sm:text-3xl">
                       {pub.year}
                     </span>
                     <Badge variant={pub.indexing === "Scopus" ? "solid" : "accent"}>

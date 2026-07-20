@@ -23,7 +23,7 @@ export default function Footer() {
           <div className="max-w-sm">
             <button
               onClick={() => go("#home")}
-              className="flex items-center gap-2 font-display text-xl font-bold"
+              className="flex min-h-11 items-center gap-2 font-display text-xl font-bold"
             >
               <span className="grid h-8 w-8 place-items-center rounded-lg bg-accent text-sm text-accent-foreground">
                 W
@@ -40,12 +40,12 @@ export default function Footer() {
               <p className="mb-3 font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
                 Navigate
               </p>
-              <ul className="space-y-2">
+              <ul>
                 {navItems.map((item) => (
                   <li key={item.name}>
                     <button
                       onClick={() => go(item.href)}
-                      className="text-sm text-muted-foreground transition-colors hover:text-accent"
+                      className="inline-flex min-h-11 items-center text-sm text-muted-foreground transition-colors hover:text-accent"
                     >
                       {item.name}
                     </button>

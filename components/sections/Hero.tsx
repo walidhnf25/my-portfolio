@@ -71,7 +71,7 @@ export default function Hero() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-70" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
             </span>
-            <span className="text-muted-foreground">Available for research &amp; engineering roles</span>
+            <span className="text-muted-foreground">Open to collaboration</span>
           </div>
 
           <h1 className="mt-6 font-display text-5xl font-bold leading-[0.95] tracking-tight sm:text-6xl lg:text-7xl">
@@ -129,20 +129,8 @@ export default function Hero() {
         </div>
 
         {/* Right — "climb to success" animation */}
-        <div className="hero-aside lg:col-span-5">
-          <div className="rounded-2xl border border-border bg-card/50 p-6 backdrop-blur-sm sm:p-8">
-            <div className="flex items-center justify-between">
-              <p className="font-mono text-xs uppercase tracking-[0.25em] text-muted-foreground">
-                The climb to success
-              </p>
-              <span className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.15em] text-accent">
-                <span className="h-1.5 w-1.5 rounded-full bg-accent" /> Goal
-              </span>
-            </div>
-            <div className="mt-2">
-              <StairClimber />
-            </div>
-          </div>
+        <div className="hero-aside mx-auto w-full max-w-[280px] sm:max-w-sm lg:col-span-5 lg:max-w-none">
+          <StairClimber />
         </div>
       </div>
 
