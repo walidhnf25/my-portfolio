@@ -7,6 +7,7 @@ import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import SceneBackground from "@/components/three/SceneBackground";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { ScrollRat } from "@/components/ui/scroll-rat";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -94,6 +95,7 @@ export default function RootLayout({
             <Navbar />
             <main>{children}</main>
             <Footer />
+            <ScrollRat />
           </SmoothScroll>
         </ThemeProvider>
       </body>
