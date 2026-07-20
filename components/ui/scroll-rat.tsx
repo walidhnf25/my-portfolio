@@ -90,10 +90,11 @@ export function ScrollRat() {
   return (
     <div
       aria-hidden="true"
-      // Above the navbar's z-50: at the top of the page the rat's track runs
-      // behind the header, and a position indicator that disappears exactly at
-      // one end of its range is worse than no indicator.
-      className="pointer-events-none fixed right-1 z-[60] block sm:right-2"
+      // Above the header (z-75): the rat's track runs behind the navbar at the
+      // top of the page, and an indicator that vanishes at one end of its own
+      // range is worse than no indicator. Still below the mobile menu panel
+      // (z-85), which it must never float over. See Navbar for the full order.
+      className="pointer-events-none fixed right-1 z-[80] block sm:right-2"
       style={{ top: INSET }}
     >
       <div ref={wrap}>
