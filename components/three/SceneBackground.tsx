@@ -6,17 +6,25 @@ import { useTheme } from "next-themes";
 
 const ParticleField = dynamic(() => import("./ParticleField"), { ssr: false });
 
+// "off" for reduced motion, "lite" on phone-sized screens (fewer particles, dpr 1,
+// no antialias), "full" everywhere else.
+type Mode = "off" | "lite" | "full";
+
 export default function SceneBackground() {
   const { resolvedTheme } = useTheme();
-  const [enabled, setEnabled] = useState(false);
+  const [mode, setMode] = useState<Mode>("off");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    // Skip the WebGL swarm on very small / low-power screens and for reduced motion.
-    const small = window.matchMedia("(max-width: 640px)").matches;
-    setEnabled(!reduce && !small);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Track the query rather than reading it once, so rotating a phone into
+    // landscape upgrades the profile without needing a reload.
+    const mq = window.matchMedia("(max-width: 640px)");
+    const apply = () => setMode(mq.matches ? "lite" : "full");
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
   }, []);
 
   // Before mount, the theme is unknown on the server. Render a deterministic
@@ -43,9 +51,11 @@ export default function SceneBackground() {
       <div className="bg-grid absolute inset-0 opacity-[0.5] [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" />
 
       {/* 3D particle swarm */}
-      {enabled && (
+      {mode !== "off" && (
         <div className="absolute inset-0 opacity-90">
-          <ParticleField accent={accent} dim={dim} />
+          {/* keyed on mode: dpr and antialias are read once at Canvas init, so a
+              profile switch needs a fresh context rather than a re-render. */}
+          <ParticleField key={mode} accent={accent} dim={dim} lite={mode === "lite"} />
         </div>
       )}
 
