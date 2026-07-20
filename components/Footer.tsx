@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Mail, MessageCircle, GraduationCap } from "lucide-react";
 import { LinkedInIcon } from "@/components/ui/brand-icons";
 import { useScrollTo } from "@/components/providers/SmoothScroll";
@@ -25,9 +26,13 @@ export default function Footer() {
               onClick={() => go("#home")}
               className="flex min-h-11 items-center gap-2 font-display text-xl font-bold"
             >
-              <span className="grid h-8 w-8 place-items-center rounded-lg bg-accent text-sm text-accent-foreground">
-                W
-              </span>
+              <Image
+                src="/logo-mark.png"
+                alt=""
+                width={64}
+                height={64}
+                className="h-8 w-8 rounded-lg object-cover"
+              />
               {profile.name}
             </button>
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground">

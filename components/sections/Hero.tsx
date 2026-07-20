@@ -43,12 +43,19 @@ export default function Hero() {
         },
       });
       tlRef.current = tl;
-      tl.from(".hero-badge", { y: 20, opacity: 0, duration: 0.6 })
-        .from(".hero-line", { yPercent: 120, opacity: 0, stagger: 0.12 }, "-=0.2")
-        .from(".hero-sub", { y: 20, opacity: 0 }, "-=0.5")
-        .from(".hero-aside", { y: 24, opacity: 0 }, "-=0.7")
-        .from(".hero-cta", { y: 20, opacity: 0, stagger: 0.1 }, "-=0.6")
-        .from(".hero-social", { scale: 0, opacity: 0, stagger: 0.06 }, "-=0.6");
+      // Absolute start times, not relative `-=` offsets — relative offsets compound,
+      // and the tail of the sequence used to land ~2.9s in.
+      //
+      // Each group starts a beat after the one above it and runs slightly shorter,
+      // so they finish in the same order the eye reads them (0.40 / 0.70 / 0.73 /
+      // 0.84 / 0.91 / 1.04) and the whole intro is done in about a second. The
+      // overlap is what makes it read as one flowing motion rather than six.
+      tl.from(".hero-badge", { y: 14, opacity: 0, duration: 0.4 }, 0)
+        .from(".hero-line", { yPercent: 110, opacity: 0, stagger: 0.1, duration: 0.5 }, 0.1)
+        .from(".hero-sub", { y: 14, opacity: 0, duration: 0.45 }, 0.28)
+        .from(".hero-aside", { y: 18, opacity: 0, duration: 0.5 }, 0.34)
+        .from(".hero-cta", { y: 14, opacity: 0, stagger: 0.06, duration: 0.45 }, 0.4)
+        .from(".hero-social", { scale: 0.75, opacity: 0, stagger: 0.04, duration: 0.4 }, 0.52);
     },
     { scope: root }
   );

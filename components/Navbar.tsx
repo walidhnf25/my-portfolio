@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { navItems } from "@/lib/portfolio";
@@ -49,11 +50,17 @@ export default function Navbar() {
         <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <button
             onClick={() => go("#home")}
+            aria-label="Walid Hanif Ataullah — back to top"
             className="group flex min-h-11 items-center gap-2 font-display text-lg font-bold tracking-tight"
           >
-            <span className="grid h-8 w-8 place-items-center rounded-lg bg-accent text-sm font-bold text-accent-foreground">
-              W
-            </span>
+            <Image
+              src="/logo-mark.png"
+              alt=""
+              width={64}
+              height={64}
+              priority
+              className="h-8 w-8 rounded-lg object-cover"
+            />
             <span className="hidden sm:inline">
               Walid<span className="text-accent">.</span>
             </span>
