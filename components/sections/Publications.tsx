@@ -21,7 +21,7 @@ export default function Publications() {
           eyebrow="Publications"
           title="Pushing the boundaries of"
           accent="knowledge"
-          description="Peer-reviewed research in AI, machine learning, computer vision, and IoT — published with IEEE and indexed journals."
+          description="Peer-reviewed research in AI, machine learning, computer vision, and IoT, published with IEEE and indexed journals."
         />
 
         {/* Stats */}

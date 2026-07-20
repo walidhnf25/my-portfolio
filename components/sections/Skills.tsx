@@ -22,7 +22,7 @@ export default function Skills() {
           eyebrow="Skills"
           title="The tools that"
           accent="power innovation"
-          description="From fullstack engineering to deep learning and IoT — a broad, applied technical stack."
+          description="From fullstack engineering to deep learning and IoT: a broad, applied technical stack."
         />
 
         <RevealGroup className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

@@ -12,9 +12,9 @@ export const profile = {
   summary:
     "Bachelor's graduate in Software Engineering with strong academic and research experience in AI, Machine Learning, Deep Learning, and Internet of Things. I contribute to Scopus-indexed publications and build data-driven, AI-based solutions through interdisciplinary research and real-world engineering.",
   summarySecondary:
-    "Highly motivated to pursue advanced studies and to develop impactful, technology-driven solutions for societal and industrial challenges — bridging the gap between human needs and technological innovation.",
+    "Highly motivated to pursue advanced studies and to develop impactful, technology-driven solutions for societal and industrial challenges, bridging the gap between human needs and technological innovation.",
   quote:
-    "Technology is not just about code — it's about solving real problems and creating meaningful impact.",
+    "Technology is not just about code. It's about solving real problems and creating meaningful impact.",
 };
 
 export const navItems = [
@@ -96,7 +96,7 @@ export const projects: Project[] = [
     title: "Trafacomm",
     date: "Mar 2026",
     description:
-      "Transformer Advanced Commissioning — a mobile app supporting transformer monitoring, tracking, and field installation through structured, integrated asset-management workflows.",
+      "Transformer Advanced Commissioning is a mobile app supporting transformer monitoring, tracking, and field installation through structured, integrated asset-management workflows.",
     technologies: ["Flutter", "REST API", "Asset Management"],
     link: "https://play.google.com/store/apps/details?id=id.stroomer.trafacomm.up3",
     category: "Energy & Utilities",
@@ -114,7 +114,7 @@ export const projects: Project[] = [
     title: "Stroomer Company Website",
     date: "Dec 2025",
     description:
-      "Corporate website promoting company services, products, and career opportunities. Built contact and recruitment features — job listings, CV upload, and email automation — with Astro, Serverless, and Sanity CMS.",
+      "Corporate website promoting company services, products, and career opportunities. Built contact and recruitment features (job listings, CV upload, and email automation) with Astro, Serverless, and Sanity CMS.",
     technologies: ["Astro", "Node.js", "Sanity CMS"],
     link: "https://stroomer.co.id",
     category: "Corporate",
@@ -133,7 +133,7 @@ export const projects: Project[] = [
     title: "E-Laman Hati",
     date: "Jul 2025",
     description:
-      "Digital platform built with DKPP Bandung City for animal health data management — registration, monitoring, vaccination tracking, and public reporting. Led a student team using Agile Scrum.",
+      "Digital platform built with DKPP Bandung City for animal health data management: registration, monitoring, vaccination tracking, and public reporting. Led a student team using Agile Scrum.",
     technologies: ["Flutter", "Agile Scrum", "Mobile"],
     link: "https://bit.ly/e-lamanhatiapk",
     category: "Government",
@@ -151,7 +151,7 @@ export const projects: Project[] = [
     title: "Hadir.In",
     date: "Jun 2025",
     description:
-      "Web platform to streamline meeting and attendance management — configurable form submission, attendance tracking, real-time monitoring, and automated PDF reporting.",
+      "Web platform to streamline meeting and attendance management, with configurable form submission, attendance tracking, real-time monitoring, and automated PDF reporting.",
     technologies: ["Laravel", "MySQL", "PDF"],
     link: "https://hadirin.teluapp.org/login",
     category: "Business",
@@ -169,7 +169,7 @@ export const projects: Project[] = [
     title: "E-Buruan Sae Dashboard",
     date: "Mar 2025",
     description:
-      "Dashboard for DKPP Bandung City managing agricultural data — harvest recording, prediction, and distribution tracking for urban farming programs.",
+      "Dashboard for DKPP Bandung City managing agricultural data: harvest recording, prediction, and distribution tracking for urban farming programs.",
     technologies: ["CodeIgniter", "MySQL", "Prediction"],
     link: "https://buruansae-dashboard.matradipti.org/login",
     category: "Government",
@@ -178,7 +178,7 @@ export const projects: Project[] = [
     title: "Jadwal.in",
     date: "Jan 2025",
     description:
-      "Barista schedule-management system for multi-outlet workforce management — flexible shift planning, approval workflows, and real-time coordination.",
+      "Barista schedule-management system for multi-outlet workforce management, with flexible shift planning, approval workflows, and real-time coordination.",
     technologies: ["Laravel", "MySQL", "Scheduling"],
     link: "https://shift.matradipti.org",
     category: "Business",
@@ -187,7 +187,7 @@ export const projects: Project[] = [
     title: "SIMONA",
     date: "Aug 2024",
     description:
-      "Non-ASN employee management system for Tangerang Regency local government — managing non-civil-servant workforce data and profiles to improve administrative efficiency.",
+      "Non-ASN employee management system for Tangerang Regency local government, managing non-civil-servant workforce data and profiles to improve administrative efficiency.",
     technologies: ["Laravel", "MySQL"],
     link: "https://simona.tangerangkab.my.id/panel",
     category: "Government",

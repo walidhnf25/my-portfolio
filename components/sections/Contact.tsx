@@ -101,7 +101,7 @@ export default function Contact() {
                   </span>
                   <h3 className="mt-5 font-display text-xl font-bold">Message sent!</h3>
                   <p className="mt-2 max-w-sm text-sm text-muted-foreground">
-                    Thanks for reaching out — I&apos;ll get back to you as soon as possible.
+                    Thanks for reaching out. I&apos;ll get back to you as soon as possible.
                   </p>
                   <button
                     onClick={() => setStatus("idle")}

@@ -50,7 +50,7 @@ export default function Navbar() {
         <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <button
             onClick={() => go("#home")}
-            aria-label="Walid Hanif Ataullah — back to top"
+            aria-label="Walid Hanif Ataullah, back to top"
             className="group flex min-h-11 items-center gap-2 font-display text-lg font-bold tracking-tight"
           >
             <Image

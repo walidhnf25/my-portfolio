@@ -51,14 +51,14 @@ export const metadata: Metadata = {
     siteName: "Walid Hanif Ataullah Portfolio",
     title: "Walid Hanif Ataullah | Software Engineer & ML/DL Enthusiast",
     description:
-      "Software Engineer & ML/DL Enthusiast — Machine Learning, Deep Learning, and IoT. Explore my publications and projects.",
+      "Software Engineer & ML/DL Enthusiast focused on Machine Learning, Deep Learning, and IoT. Explore my publications and projects.",
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Walid Hanif Ataullah" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Walid Hanif Ataullah | Software Engineer & ML/DL Enthusiast",
     description:
-      "Software Engineer & ML/DL Enthusiast — Machine Learning, Deep Learning, and IoT.",
+      "Software Engineer & ML/DL Enthusiast focused on Machine Learning, Deep Learning, and IoT.",
     images: ["/og-image.png"],
   },
   robots: {
