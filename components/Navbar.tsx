@@ -1,156 +1,142 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import { navItems } from "@/lib/data";
-import MusicPlayer from "@/components/MusicPlayer";
+import { navItems } from "@/lib/portfolio";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { useScrollTo } from "@/components/providers/SmoothScroll";
+import { cn } from "@/lib/utils";
 
 export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("home");
+  const scrollTo = useScrollTo();
+  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState("home");
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      setIsScrolled(scrollY > 10);
-
-      const sections = navItems.map((item) => item.href.replace("#", ""));
-      const current = sections.find((section) => {
-        const element = document.getElementById(section);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          return rect.top <= 120 && rect.bottom >= 120;
-        }
-        return false;
+    const onScroll = () => {
+      setScrolled(window.scrollY > 12);
+      const sections = navItems.map((i) => i.href.slice(1));
+      const current = sections.find((s) => {
+        const el = document.getElementById(s);
+        if (!el) return false;
+        const rect = el.getBoundingClientRect();
+        return rect.top <= 140 && rect.bottom >= 140;
       });
-      if (current) setActiveSection(current);
+      if (current) setActive(current);
     };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const scrollToSection = (href: string) => {
-    const element = document.getElementById(href.replace("#", ""));
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-      setIsMobileMenuOpen(false);
-    }
+  const go = (href: string) => {
+    scrollTo(href.slice(1));
+    setOpen(false);
   };
 
   return (
     <>
-      <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled ? "bg-[#FAF8F5]/98 backdrop-blur-sm shadow-md" : "bg-transparent"
-        }`}
-        style={{
-          borderBottom: isScrolled ? "2px solid #000" : "2px solid #000",
-        }}
+      <header
+        className={cn(
+          "fixed inset-x-0 top-0 z-50 transition-all duration-300",
+          scrolled
+            ? "border-b border-border bg-background/70 backdrop-blur-xl"
+            : "border-b border-transparent bg-transparent"
+        )}
       >
-        <div className="relative mx-auto max-w-7xl px-3 sm:px-4 md:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-12 sm:h-14">
-            {/* Logo - Custom Logo */}
-            <button
-              onClick={() => scrollToSection("#home")}
-              className="group"
-            >
-              <img
-                src="/logo.png"
-                alt="WHA Logo"
-                className="h-10 sm:h-15 w-auto object-contain group-hover:opacity-80 transition-opacity"
-              />
-            </button>
+        <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          <button
+            onClick={() => go("#home")}
+            className="group flex items-center gap-2 font-display text-lg font-bold tracking-tight"
+          >
+            <span className="grid h-8 w-8 place-items-center rounded-lg bg-accent text-sm font-bold text-accent-foreground">
+              W
+            </span>
+            <span className="hidden sm:inline">
+              Walid<span className="text-accent">.</span>
+            </span>
+          </button>
 
-            {/* Desktop Navigation - Newspaper style */}
-            <div className="hidden lg:flex items-center">
-              {navItems.map((item, index) => (
+          <div className="hidden items-center gap-1 lg:flex">
+            {navItems.map((item) => {
+              const id = item.href.slice(1);
+              return (
                 <button
                   key={item.name}
-                  onClick={() => scrollToSection(item.href)}
-                  className={`relative px-2 sm:px-3 py-2 text-[10px] sm:text-[11px] font-medium tracking-wide uppercase transition-colors duration-200 whitespace-nowrap font-serif ${
-                    activeSection === item.href.replace("#", "")
-                      ? "text-[#DA291C] border-b-2 border-[#DA291C]"
-                      : "text-[#444] hover:text-[#DA291C]"
-                  }`}
+                  onClick={() => go(item.href)}
+                  className={cn(
+                    "relative rounded-full px-4 py-2 text-sm font-medium transition-colors",
+                    active === id
+                      ? "text-foreground"
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
                 >
+                  {active === id && (
+                    <motion.span
+                      layoutId="nav-pill"
+                      className="absolute inset-0 -z-10 rounded-full bg-muted"
+                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    />
+                  )}
                   {item.name}
                 </button>
-              ))}
-            </div>
-
-            {/* Mobile Menu Button */}
-            <div className="flex items-center gap-1 sm:gap-2">
-              <MusicPlayer />
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="p-1 sm:p-1.5 text-black hover:text-[#DA291C] transition-colors lg:hidden"
-                aria-label="Toggle menu"
-              >
-                {isMobileMenuOpen ? (
-                  <X className="w-4 h-4" />
-                ) : (
-                  <Menu className="w-4 h-4" />
-                )}
-              </button>
-            </div>
+              );
+            })}
           </div>
-        </div>
 
-        {/* Edition line below nav */}
-        <div className="hidden lg:block bg-black text-white">
-          <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
-            <div className="flex items-center justify-between text-[8px] sm:text-[9px] tracking-[0.15em] sm:tracking-[0.2em] uppercase py-0.5 sm:py-1">
-              <span className="hidden sm:inline">Software Engineer &bull; ML/DL Enthusiast &bull; IoT Explorer</span>
-              <span>{new Date().toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" })}</span>
-            </div>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <button
+              onClick={() => setOpen((v) => !v)}
+              aria-label="Toggle menu"
+              className="grid h-9 w-9 place-items-center rounded-full border border-border text-foreground transition-colors hover:border-accent hover:text-accent lg:hidden"
+            >
+              {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            </button>
           </div>
-        </div>
-      </nav>
+        </nav>
+      </header>
 
       <AnimatePresence>
-        {isMobileMenuOpen && (
+        {open && (
           <>
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.15 }}
-              className="fixed inset-0 z-40 bg-black/80 backdrop-blur-sm md:hidden"
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={() => setOpen(false)}
+              className="fixed inset-0 z-40 bg-background/60 backdrop-blur-sm lg:hidden"
             />
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
+              initial={{ opacity: 0, y: -12 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
+              exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.2 }}
-              className="fixed top-12 sm:top-14 left-0 right-0 z-50 bg-[#FAF8F5] border-b-2 sm:border-b-4 border-black md:hidden"
+              className="fixed inset-x-3 top-20 z-50 rounded-2xl border border-border bg-card/90 p-3 backdrop-blur-xl lg:hidden"
             >
-              <div className="max-w-7xl mx-auto px-3 sm:px-4 py-3 sm:py-4">
-                <div className="grid grid-cols-2 gap-1 sm:gap-1.5">
-                  {navItems.map((item, index) => (
-                    <motion.button
+              <div className="grid gap-1">
+                {navItems.map((item, i) => {
+                  const id = item.href.slice(1);
+                  return (
+                    <button
                       key={item.name}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.02 }}
-                      onClick={() => scrollToSection(item.href)}
-                      className={`flex items-center px-3 sm:px-4 py-2 sm:py-3 text-sm font-serif font-medium transition-colors text-left border border-transparent hover:border-[#DA291C] ${
-                        activeSection === item.href.replace("#", "")
-                          ? "text-[#DA291C] bg-black/5"
-                          : "text-[#333] hover:bg-black/5"
-                      }`}
+                      onClick={() => go(item.href)}
+                      className={cn(
+                        "flex items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-medium transition-colors",
+                        active === id
+                          ? "bg-accent/10 text-accent"
+                          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                      )}
                     >
-                      <span className="text-[9px] sm:text-[10px] tracking-[0.1em] sm:tracking-[0.15em] uppercase mr-1.5 sm:mr-2">
-                        {String(index + 1).padStart(2, "0")}
+                      <span className="font-mono text-xs text-accent">
+                        {String(i + 1).padStart(2, "0")}
                       </span>
                       {item.name}
-                    </motion.button>
-                  ))}
-                </div>
+                    </button>
+                  );
+                })}
               </div>
             </motion.div>
           </>

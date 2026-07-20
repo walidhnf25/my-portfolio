@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-import { Inter, Space_Mono } from "next/font/google";
+import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { SmoothScroll } from "@/components/providers/SmoothScroll";
+import SceneBackground from "@/components/three/SceneBackground";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import AppWrapper from "@/components/AppWrapper";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -12,20 +14,23 @@ const inter = Inter({
   display: "swap",
 });
 
-const spaceMono = Space_Mono({
-  variable: "--font-space-mono",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-display",
   subsets: ["latin"],
-  weight: ["400", "700"],
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://aboutwal.id"),
-
-  title: "Walid Hanif Ataullah",
+  title: "Walid Hanif Ataullah | Software Engineer & AI Researcher",
   description:
-    "Bachelor's graduate in Software Engineering specializing in Information Technology Adoption, Machine Learning, Deep Learning, and Internet of Things. View my research publications, projects, and connect with me.",
-
+    "Bachelor's graduate in Software Engineering specializing in Information Technology Adoption, Machine Learning, Deep Learning, and Internet of Things. Explore my research publications, projects, and get in touch.",
   keywords: [
     "Walid Hanif Ataullah",
     "Software Engineer",
@@ -34,17 +39,11 @@ export const metadata: Metadata = {
     "Deep Learning",
     "IoT",
     "Portfolio",
-    "Researcher",
     "Telkom University",
   ],
-
   authors: [{ name: "Walid Hanif Ataullah" }],
   creator: "Walid Hanif Ataullah",
-
-  alternates: {
-    canonical: "https://aboutwal.id",
-  },
-
+  alternates: { canonical: "https://aboutwal.id" },
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -52,25 +51,16 @@ export const metadata: Metadata = {
     siteName: "Walid Hanif Ataullah Portfolio",
     title: "Walid Hanif Ataullah | Software Engineer & AI Researcher",
     description:
-      "Bachelor's graduate in Software Engineering specializing in Information Technology Adoption, Machine Learning, Deep Learning, and Internet of Things.",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Walid Hanif Ataullah",
-      },
-    ],
+      "Software Engineer & AI Researcher — Machine Learning, Deep Learning, and IoT. Explore my publications and projects.",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Walid Hanif Ataullah" }],
   },
-
   twitter: {
     card: "summary_large_image",
     title: "Walid Hanif Ataullah | Software Engineer & AI Researcher",
     description:
-      "Bachelor's graduate in Software Engineering specializing in Information Technology Adoption, Machine Learning, Deep Learning, and Internet of Things.",
+      "Software Engineer & AI Researcher — Machine Learning, Deep Learning, and IoT.",
     images: ["/og-image.png"],
   },
-
   robots: {
     index: true,
     follow: true,
@@ -82,30 +72,30 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-
-  icons: {
-    icon: "/logo.png",
-    shortcut: "/logo.png",
-  },
+  icons: { icon: "/logo.png", shortcut: "/logo.png" },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${spaceMono.variable} font-sans antialiased`}
+        className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} font-sans antialiased`}
       >
-        <AppWrapper>
-          <Navbar />
-          <main className="flex-1">
-            {children}
-          </main>
-          <Footer />
-        </AppWrapper>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem={false}
+          disableTransitionOnChange
+        >
+          <SmoothScroll>
+            <SceneBackground />
+            <Navbar />
+            <main>{children}</main>
+            <Footer />
+          </SmoothScroll>
+        </ThemeProvider>
       </body>
     </html>
   );
