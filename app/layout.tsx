@@ -8,6 +8,7 @@ import SceneBackground from "@/components/three/SceneBackground";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ScrollRat } from "@/components/ui/scroll-rat";
+import SplashScreen from "@/components/SplashScreen";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -96,6 +97,8 @@ export default function RootLayout({
             <main>{children}</main>
             <Footer />
             <ScrollRat />
+            {/* Last child, so it paints over everything including the navbar. */}
+            <SplashScreen />
           </SmoothScroll>
         </ThemeProvider>
       </body>

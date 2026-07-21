@@ -1,9 +1,10 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { useIntroGuarantee } from "@/lib/use-intro-guarantee";
+import { useSplashGate } from "@/hooks/useSplashScreen";
 import { ArrowRight, Download, Mail, MessageCircle, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LinkedInIcon } from "@/components/ui/brand-icons";
@@ -25,6 +26,7 @@ const socials = [
 export default function Hero() {
   const root = useRef<HTMLElement>(null);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
+  const splashDone = useSplashGate();
 
   useGSAP(
     () => {
@@ -43,6 +45,11 @@ export default function Hero() {
         },
       });
       tlRef.current = tl;
+      // Parked until the splash clears. The intro runs about a second while the
+      // splash holds the screen for five, so left to autoplay it would finish
+      // behind an opaque overlay and the visitor would meet a static hero.
+      // Timing below is untouched — only the moment the playhead starts moving.
+      tl.pause();
       // Absolute start times, not relative `-=` offsets — relative offsets compound,
       // and the tail of the sequence used to land ~2.9s in.
       //
@@ -60,7 +67,13 @@ export default function Hero() {
     { scope: root }
   );
 
-  useIntroGuarantee(root, tlRef, ANIMATED);
+  // Release the parked timeline, and only then arm the safety net — its timeout
+  // is measured from the intro actually starting, not from mount.
+  useEffect(() => {
+    if (splashDone) tlRef.current?.play();
+  }, [splashDone]);
+
+  useIntroGuarantee(root, tlRef, ANIMATED, splashDone);
 
   const scrollTo = useScrollTo();
 

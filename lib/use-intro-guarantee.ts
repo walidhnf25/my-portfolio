@@ -23,11 +23,17 @@ import type { gsap } from "gsap";
 export function useIntroGuarantee(
   root: RefObject<HTMLElement | null>,
   timeline: RefObject<gsap.core.Timeline | null>,
-  selector: string
+  selector: string,
+  /**
+   * Hold the net until the intro is actually allowed to run. A timeline parked
+   * behind the splash would otherwise be force-completed mid-wait, and the
+   * visitor would meet an already-settled hero with no intro at all.
+   */
+  armed = true
 ) {
   useEffect(() => {
     const el = root.current;
-    if (!el) return;
+    if (!el || !armed) return;
 
     const tl = timeline.current;
     const ms = tl ? (tl.duration() + 0.8) * 1000 : 3500;
@@ -56,5 +62,5 @@ export function useIntroGuarantee(
     }, ms);
 
     return () => clearTimeout(t);
-  }, [root, timeline, selector]);
+  }, [root, timeline, selector, armed]);
 }
