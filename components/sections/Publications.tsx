@@ -1,10 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { ArrowUpRight, FileText } from "lucide-react";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Reveal, RevealGroup, RevealItem } from "@/components/ui/reveal";
 import { Badge } from "@/components/ui/badge";
-import { publications } from "@/lib/portfolio";
+import { publications, publicationSlug } from "@/lib/portfolio";
 
 const stats = [
   { value: "8", label: "Publications" },
@@ -45,10 +46,8 @@ export default function Publications() {
         <div className="mt-6 space-y-3 sm:mt-8 sm:space-y-4">
           {publications.map((pub, i) => (
             <Reveal key={pub.title} delay={Math.min(i * 0.04, 0.2)}>
-              <a
-                href={pub.link}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href={`/publications/${publicationSlug(pub.title)}`}
                 className="group block rounded-2xl border border-border bg-card/50 p-5 backdrop-blur-sm transition-all hover:border-accent/40 hover:bg-card sm:p-6"
               >
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-4">
@@ -88,7 +87,7 @@ export default function Publications() {
                     </div>
                   </div>
                 </div>
-              </a>
+              </Link>
             </Reveal>
           ))}
         </div>

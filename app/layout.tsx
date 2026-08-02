@@ -7,7 +7,7 @@ import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import SceneBackground from "@/components/three/SceneBackground";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { ScrollRat } from "@/components/ui/scroll-rat";
+import { ScrollProgress } from "@/components/ui/scroll-progress";
 import SplashScreen from "@/components/SplashScreen";
 
 const inter = Inter({
@@ -30,7 +30,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://aboutwal.id"),
-  title: "Walid Hanif Ataullah | Software Engineer & ML/DL Enthusiast",
+  title: "Portfolio | Walid Hanif Ataullah",
   description:
     "Bachelor's graduate in Software Engineering specializing in Information Technology Adoption, Machine Learning, Deep Learning, and Internet of Things. Explore my research publications, projects, and get in touch.",
   keywords: [
@@ -51,14 +51,14 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://aboutwal.id",
     siteName: "Walid Hanif Ataullah Portfolio",
-    title: "Walid Hanif Ataullah | Software Engineer & ML/DL Enthusiast",
+    title: "Portfolio | Walid Hanif Ataullah",
     description:
       "Software Engineer & ML/DL Enthusiast focused on Machine Learning, Deep Learning, and IoT. Explore my publications and projects.",
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Walid Hanif Ataullah" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Walid Hanif Ataullah | Software Engineer & ML/DL Enthusiast",
+    title: "Portfolio | Walid Hanif Ataullah",
     description:
       "Software Engineer & ML/DL Enthusiast focused on Machine Learning, Deep Learning, and IoT.",
     images: ["/og-image.png"],
@@ -96,7 +96,7 @@ export default function RootLayout({
             <Navbar />
             <main>{children}</main>
             <Footer />
-            <ScrollRat />
+            <ScrollProgress />
             {/* Last child, so it paints over everything including the navbar. */}
             <SplashScreen />
           </SmoothScroll>

@@ -36,7 +36,7 @@ export async function POST(request: Request) {
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; width: 100%;">
           <!-- Header -->
           <tr>
-            <td style="background: linear-gradient(135deg, #DA291C 0%, #c02518 100%); border-radius: 16px 16px 0 0; padding: 32px;">
+            <td style="background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%); border-radius: 16px 16px 0 0; padding: 32px;">
               <table width="100%" cellpadding="0" cellspacing="0">
                 <tr>
                   <td>
@@ -63,7 +63,7 @@ export async function POST(request: Request) {
                       <tr>
                         <!-- Avatar -->
                         <td width="40" style="vertical-align: middle;">
-                          <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #DA291C 0%, #e64a3a 100%); border-radius: 50%; text-align: center;">
+                          <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%); border-radius: 50%; text-align: center;">
                             <span style="color: #ffffff; font-size: 16px; font-weight: 600; line-height: 40px; display: inline-block;">
                               ${name.charAt(0).toUpperCase()}
                             </span>
@@ -87,7 +87,7 @@ export async function POST(request: Request) {
                 ${subject ? `
                 <tr>
                   <td style="padding-top: 24px;">
-                    <span style="display: inline-block; font-size: 11px; font-weight: 600; color: #DA291C; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">
+                    <span style="display: inline-block; font-size: 11px; font-weight: 600; color: #0d9488; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">
                       Subject
                     </span>
                     <p style="margin: 0; font-size: 16px; color: #27272a; font-weight: 500;">
@@ -114,7 +114,7 @@ ${message}
                 <!-- Quick Reply Button -->
                 <tr>
                   <td style="padding-top: 28px;">
-                    <a href="mailto:${email}?subject=${encodeURIComponent(subject || 'Re: Your message')}" style="display: inline-block; background: linear-gradient(135deg, #DA291C 0%, #c02518 100%); color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 10px; font-size: 14px; font-weight: 600;">
+                    <a href="mailto:${email}?subject=${encodeURIComponent(subject || 'Re: Your message')}" style="display: inline-block; background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%); color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 10px; font-size: 14px; font-weight: 600;">
                       Quick Reply
                     </a>
                   </td>

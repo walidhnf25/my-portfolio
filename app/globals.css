@@ -29,40 +29,40 @@
   --animate-aurora: aurora 60s linear infinite;
 }
 
-/* ---------- Dark (default) ---------- */
+/* ---------- Dark (default): deep water ---------- */
 :root,
 .dark {
-  --background: #08080a;
-  --foreground: #ededf0;
-  --card: #101014;
-  --card-foreground: #ededf0;
-  --muted: #16161b;
-  --muted-foreground: #8a8a94;
-  --border: #23232b;
-  --input: #17171d;
-  --ring: #e5484d;
+  --background: #061820;     /* deep ocean */
+  --foreground: #e4f4f2;
+  --card: #0a2531;
+  --card-foreground: #e4f4f2;
+  --muted: #0e2c39;
+  --muted-foreground: #83abb1;
+  --border: #17414e;
+  --input: #0c2833;
+  --ring: #2dd4bf;
 
-  --accent: #e5484d;         /* signature red */
-  --accent-bright: #ff5964;  /* glow / hover */
-  --accent-foreground: #ffffff;
+  --accent: #2dd4bf;         /* aquatic teal */
+  --accent-bright: #5eead4;  /* glow / hover */
+  --accent-foreground: #03181e;
 
   color-scheme: dark;
 }
 
-/* ---------- Light ---------- */
+/* ---------- Light: shallow water ---------- */
 .light {
-  --background: #faf9f7;
-  --foreground: #17171a;
+  --background: #eef8f8;
+  --foreground: #0a2a30;
   --card: #ffffff;
-  --card-foreground: #17171a;
-  --muted: #f0efec;
-  --muted-foreground: #6b6b73;
-  --border: #e5e3de;
+  --card-foreground: #0a2a30;
+  --muted: #dcefef;
+  --muted-foreground: #4f747a;
+  --border: #c9e4e5;
   --input: #ffffff;
-  --ring: #da291c;
+  --ring: #0d9488;
 
-  --accent: #da291c;
-  --accent-bright: #e5484d;
+  --accent: #0d9488;         /* deeper teal for contrast on light */
+  --accent-bright: #14b8a6;
   --accent-foreground: #ffffff;
 
   color-scheme: light;
@@ -191,6 +191,18 @@ html {
 @keyframes aurora {
   0% { background-position: 50% 50%, 50% 50%; }
   100% { background-position: 350% 50%, 350% 50%; }
+}
+/* Underwater light shafts sweeping slowly, and the whole caustic layer breathing.
+   CSS animations run on the compositor, so the water still moves even where the
+   JS animation loop that drives the fish is throttled. */
+@keyframes caustics-drift {
+  0% { transform: translateX(-4%) skewX(-8deg); opacity: 0.5; }
+  50% { transform: translateX(4%) skewX(-8deg); opacity: 0.85; }
+  100% { transform: translateX(-4%) skewX(-8deg); opacity: 0.5; }
+}
+@keyframes water-breathe {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 0.8; }
 }
 
 @media (prefers-reduced-motion: reduce) {

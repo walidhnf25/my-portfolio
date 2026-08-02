@@ -1,12 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import useEmblaCarousel from "embla-carousel-react";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
 import type { EmblaOptionsType } from "embla-carousel";
-import { projects } from "@/lib/portfolio";
+import { projects, projectSlug } from "@/lib/portfolio";
 import { cn } from "@/lib/utils";
 
 // Stable reference — an inline object would reinit Embla on every render.
@@ -80,40 +81,43 @@ export default function Projects() {
                   key={p.title}
                   className="min-w-0 flex-[0_0_88%] sm:flex-[0_0_58%] lg:flex-[0_0_38%]"
                 >
-                  <SpotlightCard className="flex h-full flex-col p-6">
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-xs uppercase tracking-[0.15em] text-accent">
-                        {p.category}
-                      </span>
-                      <span className="font-mono text-xs text-muted-foreground">
-                        {p.date}
-                      </span>
-                    </div>
-                    <h3 className="mt-4 font-display text-xl font-bold leading-tight">
-                      {p.title}
-                    </h3>
-                    <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
-                      {p.description}
-                    </p>
-                    <div className="mt-5 flex flex-wrap gap-1.5">
-                      {p.technologies.map((t) => (
-                        <span
-                          key={t}
-                          className="rounded-full border border-border px-2.5 py-1 text-[11px] text-muted-foreground"
-                        >
-                          {t}
+                  {/* The whole card navigates to the detail page now; the live
+                      site link moved there. Link wraps the card so the entire
+                      surface is the target, not just the footer affordance. */}
+                  <Link
+                    href={`/projects/${projectSlug(p.title)}`}
+                    className="block h-full"
+                  >
+                    <SpotlightCard className="flex h-full flex-col p-6">
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono text-xs uppercase tracking-[0.15em] text-accent">
+                          {p.category}
                         </span>
-                      ))}
-                    </div>
-                    <a
-                      href={p.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-4 inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-accent transition-colors hover:text-accent-bright"
-                    >
-                      View project <ArrowUpRight className="h-4 w-4" />
-                    </a>
-                  </SpotlightCard>
+                        <span className="font-mono text-xs text-muted-foreground">
+                          {p.date}
+                        </span>
+                      </div>
+                      <h3 className="mt-4 font-display text-xl font-bold leading-tight">
+                        {p.title}
+                      </h3>
+                      <p className="mt-3 flex-1 text-sm leading-relaxed text-muted-foreground">
+                        {p.description}
+                      </p>
+                      <div className="mt-5 flex flex-wrap gap-1.5">
+                        {p.technologies.map((t) => (
+                          <span
+                            key={t}
+                            className="rounded-full border border-border px-2.5 py-1 text-[11px] text-muted-foreground"
+                          >
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                      <span className="mt-4 inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-accent transition-colors group-hover:text-accent-bright">
+                        View details <ArrowUpRight className="h-4 w-4" />
+                      </span>
+                    </SpotlightCard>
+                  </Link>
                 </div>
               ))}
             </div>

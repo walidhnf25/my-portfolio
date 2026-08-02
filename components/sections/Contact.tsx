@@ -68,14 +68,11 @@ export default function Contact() {
             <div className="grid gap-3">
               {contactMethods.map((m) => {
                 const Icon = iconMap[m.icon as keyof typeof iconMap];
-                return (
-                  <a
-                    key={m.label}
-                    href={m.href}
-                    target={m.href.startsWith("http") ? "_blank" : undefined}
-                    rel="noopener noreferrer"
-                    className="group flex items-center gap-4 rounded-2xl border border-border bg-card/50 p-4 backdrop-blur-sm transition-colors hover:border-accent/40"
-                  >
+                // Some entries (e.g. Location) have no real destination — "#"
+                // navigates to a stray fragment, so render those as a plain card.
+                const isLink = m.href !== "#";
+                const inner = (
+                  <>
                     <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-accent/10 text-accent transition-colors group-hover:bg-accent group-hover:text-accent-foreground">
                       <Icon className="h-5 w-5" />
                     </span>
@@ -85,7 +82,24 @@ export default function Contact() {
                       </p>
                       <p className="truncate text-sm font-medium text-foreground">{m.value}</p>
                     </div>
+                  </>
+                );
+                const className =
+                  "group flex items-center gap-4 rounded-2xl border border-border bg-card/50 p-4 backdrop-blur-sm transition-colors hover:border-accent/40";
+                return isLink ? (
+                  <a
+                    key={m.label}
+                    href={m.href}
+                    target={m.href.startsWith("http") ? "_blank" : undefined}
+                    rel="noopener noreferrer"
+                    className={className}
+                  >
+                    {inner}
                   </a>
+                ) : (
+                  <div key={m.label} className={className}>
+                    {inner}
+                  </div>
                 );
               })}
             </div>

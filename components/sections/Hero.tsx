@@ -8,7 +8,7 @@ import { useSplashGate } from "@/hooks/useSplashScreen";
 import { ArrowRight, Download, Mail, MessageCircle, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LinkedInIcon } from "@/components/ui/brand-icons";
-import { StairClimber } from "@/components/ui/stair-climber";
+import { SunkenBoat } from "@/components/ui/sunken-boat";
 import { useScrollTo } from "@/components/providers/SmoothScroll";
 import { profile, socialLinks } from "@/lib/portfolio";
 
@@ -31,7 +31,7 @@ export default function Hero() {
   useGSAP(
     () => {
       // Respect reduced-motion: skip the intro entirely so the markup simply
-      // renders in its final, visible state (matches SceneBackground/StairClimber).
+      // renders in its final, visible state (matches SceneBackground/SunkenBoat).
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
       const tl = gsap.timeline({
@@ -150,7 +150,7 @@ export default function Hero() {
 
         {/* Right — "climb to success" animation */}
         <div className="hero-aside mx-auto w-full max-w-[280px] sm:max-w-sm lg:col-span-5 lg:max-w-none">
-          <StairClimber />
+          <SunkenBoat />
         </div>
       </div>
 

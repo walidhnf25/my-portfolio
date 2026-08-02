@@ -4,10 +4,10 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 
-const ParticleField = dynamic(() => import("./ParticleField"), { ssr: false });
+const Aquarium = dynamic(() => import("./Aquarium"), { ssr: false });
 
 // "off" for reduced motion, "lite" on phone-sized screens (fewer particles, dpr 1,
-// no antialias), "full" everywhere else.
+// no antialias, fish still present), "full" everywhere else.
 type Mode = "off" | "lite" | "full";
 
 export default function SceneBackground() {
@@ -27,45 +27,56 @@ export default function SceneBackground() {
     return () => mq.removeEventListener("change", apply);
   }, []);
 
-  // Before mount, the theme is unknown on the server. Render a deterministic
-  // default (matching defaultTheme="dark") so SSR and first client render agree,
-  // then switch to the real theme after mount — avoids a hydration mismatch.
+  // Before mount the theme is unknown on the server; render the dark default so
+  // SSR and first client render agree, then switch after mount.
   const isDark = !mounted || resolvedTheme !== "light";
-  const accent = isDark ? "#e5484d" : "#da291c";
-  const dim = isDark ? "#3a3a46" : "#d8d4cc";
+
+  // Water tints — pulled toward the accent teal, darker/deeper in dark mode.
+  const deep = isDark ? "rgba(6,24,32,0)" : "rgba(238,248,248,0)";
+  const surface = isDark ? "rgba(45,212,191,0.14)" : "rgba(13,148,136,0.12)";
+  const midGlow = isDark ? "rgba(20,110,120,0.18)" : "rgba(45,212,191,0.16)";
 
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-      {/* Base gradient wash */}
+      {/* Deep-water wash: light filtering down from the surface. */}
       <div
         className="absolute inset-0"
         style={{
-          // Only a top-centered wash. An off-center glow tints translucent cards
-          // unevenly by column, making identically-styled cards look different.
-          background: isDark
-            ? "radial-gradient(120% 80% at 50% -10%, rgba(229,72,77,0.10), transparent 60%)"
-            : "radial-gradient(120% 80% at 50% -10%, rgba(218,41,28,0.08), transparent 60%)",
+          background: `radial-gradient(130% 90% at 50% -15%, ${surface}, ${deep} 55%),
+            radial-gradient(90% 70% at 15% 110%, ${midGlow}, ${deep} 60%)`,
         }}
       />
-      {/* Subtle grid */}
-      <div className="bg-grid absolute inset-0 opacity-[0.5] [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" />
 
-      {/* 3D particle swarm */}
+      {/* Caustic light shafts slanting down from the surface. CSS-animated, so the
+          water keeps moving even where the JS render loop is throttled. */}
+      <div
+        className="absolute inset-0 opacity-70 mix-blend-screen [mask-image:linear-gradient(to_bottom,black,transparent_80%)]"
+        style={{
+          background: `repeating-linear-gradient(
+            100deg,
+            transparent 0px,
+            transparent 60px,
+            color-mix(in srgb, var(--accent) 10%, transparent) 90px,
+            transparent 130px,
+            transparent 190px
+          )`,
+          animation: "caustics-drift 14s ease-in-out infinite",
+        }}
+      />
+
+      {/* Aquarium: plankton, bubbles, and the fish. */}
       {mode !== "off" && (
-        <div className="absolute inset-0 opacity-90">
+        <div className="absolute inset-0" style={{ animation: "water-breathe 9s ease-in-out infinite" }}>
           {/* keyed on mode: dpr and antialias are read once at Canvas init, so a
               profile switch needs a fresh context rather than a re-render. */}
-          <ParticleField key={mode} accent={accent} dim={dim} lite={mode === "lite"} />
+          <Aquarium key={mode} lite={mode === "lite"} />
         </div>
       )}
 
-      {/* Fade to background at the bottom so content stays readable */}
+      {/* Fade to the page background at the bottom so content stays readable. */}
       <div
         className="absolute inset-x-0 bottom-0 h-64"
-        style={{
-          background:
-            "linear-gradient(to bottom, transparent, var(--background))",
-        }}
+        style={{ background: "linear-gradient(to bottom, transparent, var(--background))" }}
       />
     </div>
   );

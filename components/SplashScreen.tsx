@@ -58,12 +58,32 @@ export default function SplashScreen() {
           transition={{ duration: SPLASH_EXIT_MS / 1000, ease: EASE }}
           aria-hidden="true"
         >
-          {/* Very soft radial lift so the black is not perfectly flat. */}
+          {/* Same aquatic backdrop as the page sections (SceneBackground), minus
+              the aquarium — no fish or creatures, just the water. Token-based
+              color-mix instead of SceneBackground's JS-computed rgba so the tints
+              track the theme in CSS with no hydration branch, while matching its
+              values closely enough to read as the same water. */}
           <div
             className="pointer-events-none absolute inset-0"
             style={{
               background:
-                "radial-gradient(70% 55% at 50% 42%, color-mix(in srgb, var(--foreground) 6%, transparent), transparent 70%)",
+                "radial-gradient(130% 90% at 50% -15%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 55%), radial-gradient(90% 70% at 15% 110%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 60%)",
+            }}
+          />
+          {/* Caustic light shafts, identical to the sections' — CSS-animated, so
+              they drift even where the JS render loop is throttled. */}
+          <div
+            className="pointer-events-none absolute inset-0 opacity-70 mix-blend-screen [mask-image:linear-gradient(to_bottom,black,transparent_80%)]"
+            style={{
+              background: `repeating-linear-gradient(
+                100deg,
+                transparent 0px,
+                transparent 60px,
+                color-mix(in srgb, var(--accent) 10%, transparent) 90px,
+                transparent 130px,
+                transparent 190px
+              )`,
+              animation: "caustics-drift 14s ease-in-out infinite",
             }}
           />
 
