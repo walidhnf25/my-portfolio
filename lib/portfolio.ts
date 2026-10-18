@@ -1,7 +1,7 @@
 // Locale-independent portfolio data. Everything a visitor reads in a particular
 // language (summary, project descriptions, labels) lives in lib/i18n/dictionaries.
 
-import { intlLocale, type Locale } from "@/lib/i18n/config";
+import { hasLocale, intlLocale, type Locale } from "@/lib/i18n/config";
 import type { Dictionary } from "@/lib/i18n/dictionaries/en";
 
 export const profile = {
@@ -15,6 +15,16 @@ export const profile = {
 
 export const NAV_IDS = ["home", "about", "projects", "blog", "contact"] as const;
 export type NavId = (typeof NAV_IDS)[number];
+
+/**
+ * Which nav item a non-home page belongs to: /en/projects/x → "projects",
+ * /id/blog → "blog". Null for the home page and anything else.
+ */
+export function navIdForPath(pathname: string): NavId | null {
+  const [, lang, section] = pathname.split("/");
+  if (!lang || !hasLocale(lang)) return null;
+  return section === "projects" || section === "blog" ? section : null;
+}
 
 /** Section anchors with their localized labels. */
 export function getNavItems(dict: Dictionary) {

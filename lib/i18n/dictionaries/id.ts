@@ -31,15 +31,18 @@ const id: Dictionary = {
     notFoundTitle: "Halaman tidak ditemukan",
     notFoundText: "Halaman yang kamu cari tidak ada.",
     goHome: "Kembali ke beranda",
+    previous: "Sebelumnya",
+    next: "Berikutnya",
+    goToSlide: "Ke slide {n}",
   },
 
   profile: {
     roles: ["Software Engineer", "ML/DL Enthusiast", "IoT Explorer"],
     tagline: "Membangun sistem cerdas yang menjembatani kebutuhan manusia dan teknologi.",
     summary:
-      "Lulusan Sarjana Rekayasa Perangkat Lunak dengan pengalaman akademik dan riset yang kuat di bidang AI, Machine Learning, Deep Learning, dan Internet of Things. Saya berkontribusi pada publikasi terindeks Scopus dan membangun solusi berbasis data dan AI melalui riset interdisipliner serta rekayasa di dunia nyata.",
+      "Lulusan Rekayasa Perangkat Lunak dengan rasa ingin tahu seorang peneliti dan disiplin seorang insinyur. Saya menekuni AI, machine learning, deep learning, dan IoT, membawa ide dari eksperimen pertama hingga menjadi sistem yang berjalan di dunia nyata.",
     summarySecondary:
-      "Sangat termotivasi untuk menempuh studi lanjut dan mengembangkan solusi berbasis teknologi yang berdampak bagi tantangan masyarakat dan industri, menjembatani kebutuhan manusia dengan inovasi teknologi.",
+      "Saya paling menikmati fase yang berantakan, ketika ide yang masih samar atau data yang belum tertata perlahan menjadi sesuatu yang jelas, berguna, dan sedikit elegan.",
     quote:
       "Teknologi bukan sekadar kode. Teknologi adalah tentang memecahkan masalah nyata dan menciptakan dampak yang berarti.",
   },
@@ -64,20 +67,24 @@ const id: Dictionary = {
     title: "Insinyur di balik",
     accent: "inovasinya",
     description:
-      "Lulusan rekayasa perangkat lunak yang mengubah riset menjadi sistem berbasis AI untuk dunia nyata.",
+      "Perkenalan singkat tentang siapa saya dan bagaimana saya bekerja.",
     areasLabel: "Bidang Keahlian",
     competenciesLabel: "Kompetensi Utama",
+    game: {
+      title: "Dolphin Dash",
+      label: "Permainan Dolphin Dash. Tekan Spasi atau ketuk untuk melompati pelampung dan jaring nelayan.",
+      start: "Tekan Spasi atau ketuk untuk bermain",
+      again: "Ketuk atau tekan Spasi untuk main lagi",
+      paused: "Dijeda. Ketuk untuk lanjut",
+      over: "Permainan selesai",
+      score: "Skor",
+      best: "Terbaik",
+    },
     expertiseAreas: [
       "Adopsi Teknologi Informasi",
       "Machine Learning & Deep Learning",
       "Internet of Things (IoT)",
       "Rekayasa Perangkat Lunak",
-    ],
-    highlights: [
-      { value: "8+", label: "Publikasi" },
-      { value: "7", label: "Terindeks Scopus" },
-      { value: "14+", label: "Proyek Dirilis" },
-      { value: "4", label: "Peran yang Dijalani" },
     ],
     coreCompetencies: [
       "Rekayasa Perangkat Lunak",
@@ -93,10 +100,7 @@ const id: Dictionary = {
     title: "Membangun solusi",
     accent: "yang berarti",
     description:
-      "Kumpulan aplikasi produksi di bidang energi, pemerintahan, pertanian, dan bisnis.",
-    previous: "Sebelumnya",
-    next: "Berikutnya",
-    goToSlide: "Ke slide {n}",
+      "Pilihan karya yang pernah saya bangun, beserta masalah yang ingin diselesaikannya.",
     viewDetails: "Lihat detail",
     detail: {
       back: "Kembali ke proyek",
@@ -225,9 +229,8 @@ const id: Dictionary = {
     eyebrow: "Blog",
     title: "Catatan membangun",
     accent: "software yang lebih baik",
-    description: "Bacaan singkat tentang clean code, production readiness, dan scalability.",
+    description: "Bacaan singkat seputar rekayasa perangkat lunak dan teknologi, dari apa yang saya pelajari di sepanjang jalan.",
     metaTitle: "Blog | Walid Hanif Ataullah",
-    allPosts: "Semua artikel",
     readArticle: "Baca artikel",
     minRead: "{n} menit baca",
     backHome: "Kembali ke beranda",

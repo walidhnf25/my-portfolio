@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import { getNavItems, NAV_IDS } from "@/lib/portfolio";
+import { getNavItems, navIdForPath, NAV_IDS } from "@/lib/portfolio";
+import { isHomePath } from "@/lib/i18n/config";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { useI18n } from "@/components/providers/LocaleProvider";
@@ -18,10 +20,16 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("home");
+  const pathname = usePathname();
+  const onHome = isHomePath(pathname);
+  // Home tracks the scroll position. A detail page has no sections to scroll
+  // through, so it lights the item it belongs to: a project → Projects, a post → Blog.
+  const activeId = onHome ? active : (navIdForPath(pathname) ?? "");
 
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 12);
+      if (!onHome) return;
       const sections: string[] = [...NAV_IDS];
       // Active = the last section whose top has crossed the vertical centre of
       // the viewport, i.e. the section the centre line currently sits in. A line
@@ -41,9 +49,11 @@ export default function Navbar() {
       setActive(current);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
+    // Re-run on every route change, so coming back to the home page recomputes the
+    // active section instead of keeping whatever it was when the visitor left.
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [onHome]);
 
   const go = (href: string) => {
     scrollTo(href.slice(1));
@@ -99,12 +109,12 @@ export default function Navbar() {
                   onClick={() => go(item.href)}
                   className={cn(
                     "relative rounded-full px-4 py-2 text-sm font-medium transition-colors",
-                    active === id
+                    activeId === id
                       ? "text-foreground"
                       : "text-muted-foreground hover:text-foreground"
                   )}
                 >
-                  {active === id && (
+                  {activeId === id && (
                     <motion.span
                       layoutId="nav-pill"
                       className="absolute inset-0 -z-10 rounded-full bg-muted"
@@ -157,7 +167,7 @@ export default function Navbar() {
                       onClick={() => go(item.href)}
                       className={cn(
                         "flex items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-medium transition-colors",
-                        active === id
+                        activeId === id
                           ? "bg-accent/10 text-accent"
                           : "text-muted-foreground hover:bg-muted hover:text-foreground"
                       )}

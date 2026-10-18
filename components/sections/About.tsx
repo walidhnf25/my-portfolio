@@ -2,9 +2,10 @@
 
 import { Quote, Check } from "lucide-react";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { Reveal, RevealGroup, RevealItem } from "@/components/ui/reveal";
+import { Reveal } from "@/components/ui/reveal";
 import { Badge } from "@/components/ui/badge";
 import { profile } from "@/lib/portfolio";
+import { DolphinGame } from "@/components/about/dolphin-game";
 import { useI18n } from "@/components/providers/LocaleProvider";
 
 export default function About() {
@@ -61,20 +62,10 @@ export default function About() {
 
           {/* Sidebar */}
           <div className="lg:col-span-5">
-            {/* Highlights */}
-            <RevealGroup className="grid grid-cols-2 gap-4">
-              {about.highlights.map((h) => (
-                <RevealItem
-                  key={h.label}
-                  className="rounded-2xl border border-border bg-card/50 p-5 backdrop-blur-sm transition-colors hover:border-accent/40"
-                >
-                  <div className="font-display text-3xl font-bold text-gradient-accent sm:text-4xl">
-                    {h.value}
-                  </div>
-                  <div className="mt-1 text-sm text-muted-foreground">{h.label}</div>
-                </RevealItem>
-              ))}
-            </RevealGroup>
+            {/* A little game, in keeping with the aquarium */}
+            <Reveal>
+              <DolphinGame />
+            </Reveal>
 
             {/* Competencies */}
             <Reveal delay={0.1} className="mt-4 rounded-2xl border border-border bg-card/50 p-6 backdrop-blur-sm">

@@ -30,15 +30,18 @@ const en = {
     notFoundTitle: "Page not found",
     notFoundText: "The page you are looking for does not exist.",
     goHome: "Back to home",
+    previous: "Previous",
+    next: "Next",
+    goToSlide: "Go to slide {n}",
   },
 
   profile: {
     roles: ["Software Engineer", "ML/DL Enthusiast", "IoT Explorer"],
     tagline: "Building intelligent systems that bridge human needs and technology.",
     summary:
-      "Bachelor's graduate in Software Engineering with strong academic and research experience in AI, Machine Learning, Deep Learning, and Internet of Things. I contribute to Scopus-indexed publications and build data-driven, AI-based solutions through interdisciplinary research and real-world engineering.",
+      "Software Engineering graduate with a researcher's curiosity and an engineer's discipline. I work across AI, machine learning, deep learning, and IoT, taking ideas from the first experiment to systems that run in the real world.",
     summarySecondary:
-      "Highly motivated to pursue advanced studies and to develop impactful, technology-driven solutions for societal and industrial challenges, bridging the gap between human needs and technological innovation.",
+      "I'm happiest in the messy middle, where a vague idea or an unruly dataset slowly turns into something clear, useful, and a little bit elegant.",
     quote:
       "Technology is not just about code. It's about solving real problems and creating meaningful impact.",
   },
@@ -63,20 +66,24 @@ const en = {
     title: "The engineer behind",
     accent: "the innovation",
     description:
-      "Software engineering graduate turning research into real-world, AI-driven systems.",
+      "A short introduction to who I am and how I work.",
     areasLabel: "Areas of Expertise",
     competenciesLabel: "Core Competencies",
+    game: {
+      title: "Dolphin Dash",
+      label: "Dolphin Dash game. Press Space or tap to jump over buoys and fishing nets.",
+      start: "Press Space or tap to play",
+      again: "Tap or press Space to play again",
+      paused: "Paused. Tap to continue",
+      over: "Game over",
+      score: "Score",
+      best: "Best",
+    },
     expertiseAreas: [
       "Information Technology Adoption",
       "Machine Learning & Deep Learning",
       "Internet of Things (IoT)",
       "Software Engineering",
-    ],
-    highlights: [
-      { value: "8+", label: "Publications" },
-      { value: "7", label: "Scopus Indexed" },
-      { value: "14+", label: "Projects Shipped" },
-      { value: "4", label: "Roles Held" },
     ],
     coreCompetencies: [
       "Software Engineering",
@@ -92,10 +99,7 @@ const en = {
     title: "Building solutions",
     accent: "that matter",
     description:
-      "A selection of production apps across energy, government, agriculture, and business.",
-    previous: "Previous",
-    next: "Next",
-    goToSlide: "Go to slide {n}",
+      "A selection of things I've built, and the problems they set out to solve.",
     viewDetails: "View details",
     detail: {
       back: "Back to projects",
@@ -226,9 +230,8 @@ const en = {
     title: "Notes on building",
     accent: "better software",
     description:
-      "Short reads on clean code, production readiness, and scalability.",
+      "Short reads on software engineering and technology, from what I'm learning along the way.",
     metaTitle: "Blog | Walid Hanif Ataullah",
-    allPosts: "All posts",
     readArticle: "Read article",
     minRead: "{n} min read",
     backHome: "Back to home",

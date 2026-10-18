@@ -1,16 +1,23 @@
 "use client";
 
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { RevealGroup, RevealItem } from "@/components/ui/reveal";
+import {
+  CarouselArrows,
+  CarouselDots,
+  CarouselSlide,
+  CarouselTrack,
+  useCardCarousel,
+} from "@/components/ui/card-carousel";
 import { PostCard } from "@/components/blog/post-card";
 import { getPosts } from "@/lib/blog";
 import { useI18n } from "@/components/providers/LocaleProvider";
+import { fmt } from "@/lib/i18n/config";
 
 export default function Blog() {
-  const { locale, t, path } = useI18n();
+  const { locale, t } = useI18n();
   const posts = getPosts(locale);
+  const [viewport, carousel] = useCardCarousel();
+
   return (
     <section id="blog" className="section-anchor relative py-24 sm:py-32">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -21,22 +28,22 @@ export default function Blog() {
             accent={t.blog.accent}
             description={t.blog.description}
           />
-          <Link
-            href={path("/blog")}
-            className="group inline-flex min-h-11 shrink-0 items-center gap-1.5 text-sm font-medium text-accent transition-colors hover:text-accent-bright"
-          >
-            {t.blog.allPosts}
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </Link>
+          <CarouselArrows
+            carousel={carousel}
+            previousLabel={t.common.previous}
+            nextLabel={t.common.next}
+          />
         </div>
 
-        <RevealGroup className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <CarouselTrack viewport={viewport}>
           {posts.map((post) => (
-            <RevealItem key={post.slug}>
+            <CarouselSlide key={post.slug}>
               <PostCard post={post} locale={locale} labels={t.blog} />
-            </RevealItem>
+            </CarouselSlide>
           ))}
-        </RevealGroup>
+        </CarouselTrack>
+
+        <CarouselDots carousel={carousel} label={(n) => fmt(t.common.goToSlide, { n })} />
       </div>
     </section>
   );
