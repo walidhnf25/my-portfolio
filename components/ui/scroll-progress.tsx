@@ -51,6 +51,9 @@ export function ScrollProgress() {
     let idle = 0;
 
     const update = () => {
+      // Hidden (phones): nothing to position or animate. offsetParent is null
+      // while the column is display:none.
+      if (!h.offsetParent) return;
       const max = document.documentElement.scrollHeight - window.innerHeight;
       const progress = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
 
@@ -100,13 +103,10 @@ export function ScrollProgress() {
       // Above the header (z-75) so the rod isn't hidden behind the navbar, below
       // the mobile menu panel (z-85). See Navbar for the full order.
       //
-      // The whole column is parked to the RIGHT of the hamburger: its left edge
-      // (right-2 + w-36 => ~x331 on a 375 phone) sits a comfortable ~12px clear
-      // of the hamburger's right edge (~x319, set by the navbar's pr-14), while
-      // the rod's far end keeps ~9px off the screen edge — close but not flush.
-      // So nothing in it — rod, line, hook — overlaps that button, and it stays
-      // level with the theme toggle.
-      className="pointer-events-none fixed inset-y-0 right-2 z-[80] block w-[36px] sm:right-4 sm:w-[48px]"
+      // Hidden on phones (below sm): there it crowded the navbar and the content
+      // edge, and the native scroll bar is back instead (see globals.css). From sm
+      // up it sits in the right margin, level with the theme toggle.
+      className="pointer-events-none fixed inset-y-0 right-4 z-[80] hidden w-[48px] sm:block"
     >
       {/* The rod, flipped: reel + grip at the RIGHT (the corner), tapering LEFT
           to the tip, from which the line drops. Facing away from the hamburger. */}

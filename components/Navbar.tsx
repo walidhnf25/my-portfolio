@@ -75,13 +75,7 @@ export default function Navbar() {
             : "border-b border-transparent bg-transparent"
         )}
       >
-        {/* Extra right padding on phones only: the scroll-indicator column runs
-            down that edge, its rod level with the theme toggle. The hamburger has
-            to sit clear of the rod's near (tip) end — pr-14 (56px) leaves a small,
-            even gap (neither touching as pr-11 did, nor drifting far as pr-16).
-            From sm up the centred max-w-6xl container already clears the column,
-            so it resets. */}
-        <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 pr-14 sm:px-6 lg:px-8">
+        <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <button
             onClick={() => go("#home")}
             aria-label={t.common.backToTop}

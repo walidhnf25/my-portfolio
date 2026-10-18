@@ -116,14 +116,18 @@ html.lenis body {
   color: var(--foreground);
 }
 
-/* ScrollRat is the page's position indicator at every width, so the native
-   vertical bar is hidden throughout. Scrolling itself is untouched. */
-html {
-  scrollbar-width: none;
-}
-::-webkit-scrollbar {
-  width: 0;
-  height: 0;
+/* From sm up the fishing-rod indicator (ScrollProgress) is the page's position
+   indicator, so the native vertical bar is hidden. Below sm the rod is hidden,
+   so the native bar stays: on a phone it is a thin overlay that fades out.
+   Scrolling itself is untouched either way. */
+@media (min-width: 640px) {
+  html {
+    scrollbar-width: none;
+  }
+  ::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
 }
 
 /* ---------- Utilities ---------- */
