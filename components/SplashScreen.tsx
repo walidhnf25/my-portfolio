@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { preload } from "react-dom";
 import { useSplashScreen } from "@/hooks/useSplashScreen";
 import { useI18n } from "@/components/providers/LocaleProvider";
+import { SeaWater } from "@/components/three/SeaWater";
 import type { Dictionary } from "@/lib/i18n";
 import {
   POSE_ASPECT,
@@ -68,34 +69,11 @@ export default function SplashScreen() {
           transition={{ duration: SPLASH_EXIT_MS / 1000, ease: EASE }}
           aria-hidden="true"
         >
-          {/* Same aquatic backdrop as the page sections (SceneBackground), minus
-              the aquarium — no fish or creatures, just the water. Token-based
-              color-mix instead of SceneBackground's JS-computed rgba so the tints
-              track the theme in CSS with no hydration branch, while matching its
-              values closely enough to read as the same water. */}
-          <div
-            className="pointer-events-none absolute inset-0"
-            style={{
-              background:
-                "radial-gradient(130% 90% at 50% -15%, color-mix(in srgb, var(--accent) 13%, transparent), transparent 55%), radial-gradient(90% 70% at 15% 110%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 60%)",
-            }}
-          />
-          {/* Caustic light shafts, identical to the sections' — CSS-animated, so
-              they drift even where the JS render loop is throttled. */}
-          <div
-            className="pointer-events-none absolute inset-0 opacity-70 mix-blend-screen [mask-image:linear-gradient(to_bottom,black,transparent_80%)]"
-            style={{
-              background: `repeating-linear-gradient(
-                100deg,
-                transparent 0px,
-                transparent 60px,
-                color-mix(in srgb, var(--accent) 10%, transparent) 90px,
-                transparent 130px,
-                transparent 190px
-              )`,
-              animation: "caustics-drift 14s ease-in-out infinite",
-            }}
-          />
+          {/* The same sea as the page (SceneBackground), minus the aquarium: night
+              navy under a moon, or bright day water under a sun, by theme. */}
+          <div className="pointer-events-none absolute inset-0">
+            <SeaWater />
+          </div>
 
           {MOTES.map((m, i) => (
             <motion.span
