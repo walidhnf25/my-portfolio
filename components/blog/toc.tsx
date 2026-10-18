@@ -8,13 +8,13 @@ export type TocItem = { id: string; label: string };
  * "On this page" list. Goes through useScrollTo (Lenis) rather than a plain
  * `#hash` link, which the smooth-scroll controller would otherwise fight.
  */
-export function Toc({ items }: { items: TocItem[] }) {
+export function Toc({ items, label }: { items: TocItem[]; label: string }) {
   const scrollTo = useScrollTo();
 
   return (
-    <nav aria-label="On this page">
+    <nav aria-label={label}>
       <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">
-        On this page
+        {label}
       </p>
       <ol className="mt-3 space-y-0.5">
         {items.map((item, i) => (

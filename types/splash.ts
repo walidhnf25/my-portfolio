@@ -1,5 +1,4 @@
 import type { CSSProperties } from "react";
-import { profile } from "@/lib/portfolio";
 
 /** The four poses baked into `public/splash-screen.png`, in play order. */
 export type SplashPose = "normal" | "fingerGuns" | "fingerGunsSmile" | "fistOnChest";
@@ -88,10 +87,15 @@ export function poseBackground(pose: SplashPose): CSSProperties {
   };
 }
 
-/** Copy shown under the portrait. Two lines so the role can stack. */
+/**
+ * Which caption shows under the portrait. The text itself is localized, so the
+ * timeline only names it; SplashScreen resolves the lines from the dictionary
+ * (the "role" caption stacks the profile's roles on separate lines).
+ */
+export type SplashCaptionId = "hi" | "role" | "welcome";
+
 export interface SplashCaption {
-  id: string;
-  lines: readonly string[];
+  id: SplashCaptionId;
 }
 
 export interface SplashPhase {
@@ -109,19 +113,17 @@ export interface SplashPhase {
  */
 export const SPLASH_PHASES: readonly SplashPhase[] = [
   { at: 0, pose: "normal", caption: null },
-  { at: 800, pose: "fingerGuns", caption: { id: "hi", lines: ["Hi, I'm Walid Hanif"] } },
-  { at: 1800, pose: "fingerGunsSmile", caption: { id: "hi", lines: ["Hi, I'm Walid Hanif"] } },
+  { at: 800, pose: "fingerGuns", caption: { id: "hi" } },
+  { at: 1800, pose: "fingerGunsSmile", caption: { id: "hi" } },
   {
     at: 2500,
     pose: "fistOnChest",
-    // Read from the shared profile rather than retyped: the hero renders the
-    // same three roles, and a second copy here is a copy that drifts.
-    caption: { id: "role", lines: profile.roles },
+    caption: { id: "role" },
   },
   {
     at: 3500,
     pose: "fistOnChest",
-    caption: { id: "welcome", lines: ["Welcome to my Portfolio"] },
+    caption: { id: "welcome" },
   },
 ] as const;
 

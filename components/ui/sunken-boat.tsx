@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
+import { useI18n } from "@/components/providers/LocaleProvider";
 
 // Bubbles seeping up from the wreck. x/y are start points; each rises and fades.
 const BUBBLES = [
@@ -14,6 +15,7 @@ const BUBBLES = [
 ];
 
 export function SunkenBoat() {
+  const { t } = useI18n();
   const root = useRef<SVGSVGElement>(null);
 
   useGSAP(
@@ -76,7 +78,7 @@ export function SunkenBoat() {
       viewBox="0 0 320 300"
       className="h-auto w-full overflow-visible"
       role="img"
-      aria-label="A sunken wooden boat resting on the seabed, with bubbles rising and seaweed swaying"
+      aria-label={t.hero.boatLabel}
     >
       {/* Seabed dune */}
       <path

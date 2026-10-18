@@ -1,63 +1,69 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useSyncExternalStore } from "react";
 import Link from "next/link";
 import useEmblaCarousel from "embla-carousel-react";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { SpotlightCard } from "@/components/ui/spotlight-card";
 import type { EmblaOptionsType } from "embla-carousel";
-import { projects, projectSlug } from "@/lib/portfolio";
+import { getProjectDetails } from "@/lib/portfolio";
+import { useI18n } from "@/components/providers/LocaleProvider";
+import { fmt } from "@/lib/i18n/config";
 import { cn } from "@/lib/utils";
 
 // Stable reference — an inline object would reinit Embla on every render.
 const EMBLA_OPTIONS: EmblaOptionsType = { align: "start", loop: false, dragFree: true };
 
 export default function Projects() {
+  const { locale, t, path } = useI18n();
+  const projects = getProjectDetails(t, locale);
   const [emblaRef, emblaApi] = useEmblaCarousel(EMBLA_OPTIONS);
-  const [selected, setSelected] = useState(0);
-  const [snaps, setSnaps] = useState<number[]>([]);
-  const [canPrev, setCanPrev] = useState(false);
-  const [canNext, setCanNext] = useState(true);
 
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return;
-    setSelected(emblaApi.selectedScrollSnap());
-    setCanPrev(emblaApi.canScrollPrev());
-    setCanNext(emblaApi.canScrollNext());
-  }, [emblaApi]);
+  // Embla owns this state, so read it as an external store instead of mirroring it
+  // into React state from an effect. Primitive snapshots keep it referentially stable.
+  const subscribe = useCallback(
+    (onChange: () => void) => {
+      if (!emblaApi) return () => {};
+      emblaApi.on("select", onChange).on("reInit", onChange);
+      return () => {
+        emblaApi.off("select", onChange).off("reInit", onChange);
+      };
+    },
+    [emblaApi]
+  );
+  const selected = useSyncExternalStore(subscribe, () => emblaApi?.selectedScrollSnap() ?? 0, () => 0);
+  const snapCount = useSyncExternalStore(subscribe, () => emblaApi?.scrollSnapList().length ?? 0, () => 0);
+  const canPrev = useSyncExternalStore(subscribe, () => emblaApi?.canScrollPrev() ?? false, () => false);
+  const canNext = useSyncExternalStore(subscribe, () => emblaApi?.canScrollNext() ?? true, () => true);
 
   useEffect(() => {
     if (!emblaApi) return;
-    setSnaps(emblaApi.scrollSnapList());
-    onSelect();
-    emblaApi.on("select", onSelect);
-    emblaApi.on("reInit", onSelect);
     // Re-measure after fonts/layout settle so the engine can scroll reliably.
-    const timers = [200, 600].map((t) => window.setTimeout(() => emblaApi.reInit(), t));
+    const timers = [200, 600].map((ms) => window.setTimeout(() => emblaApi.reInit(), ms));
     const onLoad = () => emblaApi.reInit();
     window.addEventListener("load", onLoad);
     return () => {
       timers.forEach(clearTimeout);
       window.removeEventListener("load", onLoad);
     };
-  }, [emblaApi, onSelect]);
+  }, [emblaApi]);
 
   return (
     <section id="projects" className="section-anchor relative py-24 sm:py-32">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
           <SectionHeading
-            eyebrow="Featured Projects"
-            title="Building solutions"
-            accent="that matter"
-            description="A selection of production apps across energy, government, agriculture, and business."
+            eyebrow={t.projects.eyebrow}
+            title={t.projects.title}
+            accent={t.projects.accent}
+            description={t.projects.description}
           />
           <div className="flex shrink-0 gap-2">
             <button
               onClick={() => emblaApi?.scrollPrev()}
               disabled={!canPrev}
-              aria-label="Previous"
+              aria-label={t.projects.previous}
               className="grid h-11 w-11 place-items-center rounded-full border border-border text-foreground transition-colors hover:border-accent hover:text-accent disabled:opacity-30"
             >
               <ArrowLeft className="h-4 w-4" />
@@ -65,7 +71,7 @@ export default function Projects() {
             <button
               onClick={() => emblaApi?.scrollNext()}
               disabled={!canNext}
-              aria-label="Next"
+              aria-label={t.projects.next}
               className="grid h-11 w-11 place-items-center rounded-full border border-border text-foreground transition-colors hover:border-accent hover:text-accent disabled:opacity-30"
             >
               <ArrowRight className="h-4 w-4" />
@@ -85,7 +91,7 @@ export default function Projects() {
                       site link moved there. Link wraps the card so the entire
                       surface is the target, not just the footer affordance. */}
                   <Link
-                    href={`/projects/${projectSlug(p.title)}`}
+                    href={path(`/projects/${p.slug}`)}
                     className="block h-full"
                   >
                     <SpotlightCard className="flex h-full flex-col p-6">
@@ -94,7 +100,7 @@ export default function Projects() {
                           {p.category}
                         </span>
                         <span className="font-mono text-xs text-muted-foreground">
-                          {p.date}
+                          {p.dateLabel}
                         </span>
                       </div>
                       <h3 className="mt-4 font-display text-xl font-bold leading-tight">
@@ -114,7 +120,7 @@ export default function Projects() {
                         ))}
                       </div>
                       <span className="mt-4 inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-accent transition-colors group-hover:text-accent-bright">
-                        View details <ArrowUpRight className="h-4 w-4" />
+                        {t.projects.viewDetails} <ArrowUpRight className="h-4 w-4" />
                       </span>
                     </SpotlightCard>
                   </Link>
@@ -126,10 +132,10 @@ export default function Projects() {
 
         {/* Progress dots — the bar is the visual, the button is the (finger-sized) tap area */}
         <div className="mt-4 flex justify-center">
-          {snaps.map((_, i) => (
+          {Array.from({ length: snapCount }, (_, i) => (
             <button
               key={i}
-              aria-label={`Go to slide ${i + 1}`}
+              aria-label={fmt(t.projects.goToSlide, { n: i + 1 })}
               onClick={() => emblaApi?.scrollTo(i)}
               className="group grid h-11 w-6 place-items-center"
             >

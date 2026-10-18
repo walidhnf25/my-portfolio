@@ -11,6 +11,7 @@ import { LinkedInIcon } from "@/components/ui/brand-icons";
 import { SunkenBoat } from "@/components/ui/sunken-boat";
 import { useScrollTo } from "@/components/providers/SmoothScroll";
 import { profile, socialLinks } from "@/lib/portfolio";
+import { useI18n } from "@/components/providers/LocaleProvider";
 
 // Every element the intro timeline hides via `.from()`.
 const ANIMATED =
@@ -24,6 +25,7 @@ const socials = [
 ];
 
 export default function Hero() {
+  const { t } = useI18n();
   const root = useRef<HTMLElement>(null);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
   const splashDone = useSplashGate();
@@ -91,7 +93,7 @@ export default function Hero() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-70" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
             </span>
-            <span className="text-muted-foreground">Open to collaboration</span>
+            <span className="text-muted-foreground">{t.hero.badge}</span>
           </div>
 
           <h1 className="mt-6 font-display text-5xl font-bold leading-[0.95] tracking-tight sm:text-6xl lg:text-7xl">
@@ -104,7 +106,7 @@ export default function Hero() {
           </h1>
 
           <div className="hero-sub mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground sm:text-sm">
-            {profile.roles.map((role, i) => (
+            {t.profile.roles.map((role, i) => (
               <span key={role} className="flex items-center gap-4">
                 {i > 0 && <span className="h-1 w-1 rounded-full bg-accent" />}
                 {role}
@@ -113,13 +115,13 @@ export default function Hero() {
           </div>
 
           <p className="hero-sub mt-5 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-            {profile.summary}
+            {t.profile.summary}
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
             <Button asChild variant="primary" size="lg" className="hero-cta">
               <a href={profile.cv} download>
-                <Download aria-hidden="true" /> Download CV
+                <Download aria-hidden="true" /> {t.hero.downloadCv}
               </a>
             </Button>
             <Button
@@ -128,7 +130,7 @@ export default function Hero() {
               className="hero-cta"
               onClick={() => scrollTo("projects")}
             >
-              View Work <ArrowRight aria-hidden="true" />
+              {t.hero.viewWork} <ArrowRight aria-hidden="true" />
             </Button>
           </div>
 
@@ -157,10 +159,10 @@ export default function Hero() {
       {/* Scroll hint */}
       <button
         onClick={() => scrollTo("about")}
-        aria-label="Scroll to about"
+        aria-label={t.hero.scrollToAbout}
         className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-muted-foreground transition-colors hover:text-accent sm:flex"
       >
-        <span className="font-mono text-[10px] uppercase tracking-[0.3em]">Scroll</span>
+        <span className="font-mono text-[10px] uppercase tracking-[0.3em]">{t.hero.scroll}</span>
         <span className="flex h-9 w-5 justify-center rounded-full border border-border pt-1.5">
           <span className="h-1.5 w-1 animate-bounce rounded-full bg-accent" />
         </span>

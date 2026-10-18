@@ -1,56 +1,13 @@
-// Blog content. Each post opens with the original caption and expands every slide
-// of its carousel into a section. The slide images live in
-// /public/blog/<slug>/slide-NN.png.
+// Indonesian post content (the original text). Metadata shared by every locale
+// lives in ../posts.ts.
 
-export type Block =
-  | { type: "p"; text: string }
-  | { type: "list"; items: string[]; ordered?: boolean }
-  /** Short labelled facts: a title, a sentence, and optionally bullet points. */
-  | { type: "cards"; items: { title: string; text?: string; points?: string[] }[] }
-  | {
-      type: "code";
-      code: string;
-      label?: string;
-      /** bad = what to avoid, good = the improved version. Colours the label. */
-      tone?: "bad" | "good";
-      lang?: string;
-    }
-  | { type: "note"; text: string }
-  | { type: "quote"; text: string };
+import type { PostContent } from "../types";
 
-export type PostSection = {
-  /** Slide kicker, e.g. "Readability". */
-  kicker: string;
-  heading: string;
-  blocks: Block[];
-};
-
-export type Post = {
-  slug: string;
-  title: string;
-  excerpt: string;
-  /** ISO date (YYYY-MM-DD). */
-  date: string;
-  /** Number of slides in the original carousel; files are slide-01..slide-NN. */
-  slideCount: number;
-  tags: string[];
-  /** The caption that opens the article. */
-  intro: Block[];
-  sections: PostSection[];
-  takeaway: { heading: string; blocks: Block[] };
-  /** The question the original post closed with. */
-  closingQuestion: string;
-};
-
-export const posts: Post[] = [
-  {
-    slug: "your-code-works-but-can-it-scale",
+const id: Record<string, PostContent> = {
+  "your-code-works-but-can-it-scale": {
     title: "Your Code Works. But Can It Scale?",
     excerpt:
       "Aplikasi lancar di local, lalu pengguna bertambah. Langkah pertama scalability biasanya jauh lebih sederhana dari microservices: temukan bottleneck, ukur, baru perbaiki.",
-    date: "2026-10-17",
-    slideCount: 8,
-    tags: ["Software Engineering", "System Design", "Backend Development", "Scalability", "Software Architecture"],
     intro: [
       {
         type: "p",
@@ -257,15 +214,10 @@ export const posts: Post[] = [
     },
     closingQuestion: "Bottleneck pertama apa yang akan kamu selidiki ketika sebuah API mulai melambat?",
   },
-
-  {
-    slug: "clean-code-is-about-clarity",
+  "clean-code-is-about-clarity": {
     title: "Clean Code Is Not About Making Code Look Pretty",
     excerpt:
       "Code yang rapi memang menyenangkan dilihat, tapi itu baru permulaan. Clean code berarti clarity, bukan cosmetics: mudah dipahami, diubah, diuji, dan dirawat.",
-    date: "2026-10-15",
-    slideCount: 8,
-    tags: ["Software Engineering", "Clean Code", "Software Development", "Programming", "Developer"],
     intro: [
       {
         type: "p",
@@ -457,15 +409,10 @@ export const posts: Post[] = [
     closingQuestion:
       "Menurut kamu, apa kebiasaan clean code yang paling berdampak pada kualitas software yang kamu bangun?",
   },
-
-  {
-    slug: "production-ready-software",
+  "production-ready-software": {
     title: "Code Kamu Sudah Jalan. Tapi Apakah Production-Ready?",
     excerpt:
       "Working software dan production-ready software bukan hal yang sama. Lima aspek yang membedakannya: error handling, validasi data, security, testing & observability, dan maintainability.",
-    date: "2026-10-12",
-    slideCount: 8,
-    tags: ["Software Engineering", "Production Ready", "Backend Development", "Clean Code", "Programming", "Tech Career"],
     intro: [
       {
         type: "p",
@@ -636,62 +583,6 @@ export const posts: Post[] = [
     closingQuestion:
       "Menurut kamu, aspek apa yang paling sering diabaikan developer ketika membangun aplikasi untuk production?",
   },
-];
+};
 
-/** Newest first, regardless of authoring order. */
-export const sortedPosts = [...posts].sort((a, b) => b.date.localeCompare(a.date));
-
-export function getPostBySlug(slug: string): Post | undefined {
-  return posts.find((p) => p.slug === slug);
-}
-
-export function postCover(post: Post): string {
-  return `/blog/${post.slug}/slide-01.png`;
-}
-
-export function postSlides(post: Post): { src: string; n: number }[] {
-  return Array.from({ length: post.slideCount }, (_, i) => ({
-    n: i + 1,
-    src: `/blog/${post.slug}/slide-${String(i + 1).padStart(2, "0")}.png`,
-  }));
-}
-
-/** "17 Oct 2026". Fixed locale and UTC so server and client render the same. */
-export function formatPostDate(iso: string): string {
-  return new Date(`${iso}T00:00:00Z`).toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    timeZone: "UTC",
-  });
-}
-
-function blockWords(b: Block): number {
-  const count = (s: string) => s.split(/\s+/).filter(Boolean).length;
-  switch (b.type) {
-    case "p":
-    case "note":
-    case "quote":
-      return count(b.text);
-    case "list":
-      return b.items.reduce((n, s) => n + count(s), 0);
-    case "cards":
-      return b.items.reduce(
-        (n, c) => n + count(c.title) + count(c.text ?? "") + (c.points ?? []).reduce((m, s) => m + count(s), 0),
-        0
-      );
-    case "code":
-      return 0;
-  }
-}
-
-/** Reading time in whole minutes at ~200 wpm, prose only (code is skimmed). */
-export function readingMinutes(post: Post): number {
-  const blocks = [
-    ...post.intro,
-    ...post.sections.flatMap((s) => s.blocks),
-    ...post.takeaway.blocks,
-  ];
-  const words = blocks.reduce((n, b) => n + blockWords(b), 0);
-  return Math.max(1, Math.round(words / 200));
-}
+export default id;

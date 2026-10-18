@@ -11,30 +11,36 @@ import {
   getPostBySlug,
   postCover,
   postSlides,
-  posts,
+  postSlugs,
   readingMinutes,
 } from "@/lib/blog";
+import { fmt, hasLocale, localePath, locales } from "@/lib/i18n/config";
+import { getDictionary } from "@/lib/i18n";
 
 // Every post is known at build time, so prerender them all. Next 16 passes
 // `params` as a Promise to page, generateMetadata, and generateStaticParams.
 export function generateStaticParams() {
-  return posts.map((p) => ({ slug: p.slug }));
+  return postSlugs.map((slug) => ({ slug }));
 }
 
 // Reject any slug we did not generate rather than render an empty shell.
 export const dynamicParams = false;
 
-type Params = { params: Promise<{ slug: string }> };
+type Params = { params: Promise<{ lang: string; slug: string }> };
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
-  const { slug } = await params;
-  const post = getPostBySlug(slug);
-  if (!post) return { title: "Post not found" };
+  const { lang, slug } = await params;
+  if (!hasLocale(lang)) return {};
+  const post = getPostBySlug(slug, lang);
+  if (!post) return { title: getDictionary(lang).blog.notFound };
 
   return {
     title: `${post.title} | Walid Hanif Ataullah`,
     description: post.excerpt,
-    alternates: { canonical: `/blog/${post.slug}` },
+    alternates: {
+      canonical: localePath(lang, `/blog/${post.slug}`),
+      languages: Object.fromEntries(locales.map((l) => [l, localePath(l, `/blog/${post.slug}`)])),
+    },
     openGraph: {
       type: "article",
       title: post.title,
@@ -48,9 +54,12 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 }
 
 export default async function BlogPostPage({ params }: Params) {
-  const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const { lang, slug } = await params;
+  if (!hasLocale(lang)) notFound();
+  const t = getDictionary(lang).blog;
+  const post = getPostBySlug(slug, lang);
   if (!post) notFound();
+  const d = t.detail;
 
   const sectionId = (i: number) => `section-${i + 1}`;
   const toc = post.sections.map((s, i) => ({ id: sectionId(i), label: s.kicker }));
@@ -75,7 +84,7 @@ export default async function BlogPostPage({ params }: Params) {
           className="group inline-flex min-h-11 items-center gap-2 font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground transition-colors hover:text-accent"
         >
           <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
-          Back to blog
+          {d.back}
         </SectionLink>
 
         {/* Hero: copy on the left, title slide on the right ------------ */}
@@ -83,12 +92,12 @@ export default async function BlogPostPage({ params }: Params) {
           <div className="lg:col-span-3">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground">
               <time dateTime={post.date} className="text-accent">
-                {formatPostDate(post.date)}
+                {formatPostDate(post.date, lang)}
               </time>
               <span className="text-border">·</span>
               <span className="inline-flex items-center gap-1.5">
                 <Clock className="h-3.5 w-3.5" />
-                {readingMinutes(post)} min read
+                {fmt(t.minRead, { n: readingMinutes(post) })}
               </span>
             </div>
 
@@ -136,7 +145,7 @@ export default async function BlogPostPage({ params }: Params) {
 
             {/* Takeaway */}
             <section className="mt-16 rounded-3xl border border-accent/30 bg-card/60 p-6 backdrop-blur-sm sm:p-8">
-              <div className="font-mono text-xs uppercase tracking-[0.2em] text-accent">Takeaway</div>
+              <div className="font-mono text-xs uppercase tracking-[0.2em] text-accent">{d.takeaway}</div>
               <h2 className="mt-3 mb-6 font-display text-2xl font-bold leading-snug tracking-tight sm:text-3xl">
                 {post.takeaway.heading}
               </h2>
@@ -148,7 +157,7 @@ export default async function BlogPostPage({ params }: Params) {
               <MessageCircleQuestion className="mt-0.5 h-6 w-6 shrink-0 text-accent" />
               <div>
                 <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">
-                  Pertanyaan penutup
+                  {d.closingQuestion}
                 </div>
                 <p className="mt-1.5 font-display text-lg leading-snug text-foreground">
                   {post.closingQuestion}
@@ -159,7 +168,7 @@ export default async function BlogPostPage({ params }: Params) {
 
           <aside className="hidden lg:col-span-4 lg:block">
             <div className="sticky top-28 rounded-2xl border border-border bg-card/50 p-5 backdrop-blur-sm">
-              <Toc items={toc} />
+              <Toc items={toc} label={d.contents} />
             </div>
           </aside>
         </div>
@@ -172,7 +181,7 @@ export default async function BlogPostPage({ params }: Params) {
             className="group inline-flex min-h-11 items-center gap-2 text-sm font-medium text-accent transition-colors hover:text-accent-bright"
           >
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
-            All posts
+            {d.all}
           </SectionLink>
         </div>
       </div>

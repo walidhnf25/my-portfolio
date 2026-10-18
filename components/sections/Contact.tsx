@@ -7,12 +7,15 @@ import { Reveal } from "@/components/ui/reveal";
 import { Button } from "@/components/ui/button";
 import { LinkedInIcon } from "@/components/ui/brand-icons";
 import { contactMethods } from "@/lib/portfolio";
+import { useI18n } from "@/components/providers/LocaleProvider";
 
 const iconMap = { mail: Mail, linkedin: LinkedInIcon, message: MessageCircle, pin: MapPin } as const;
 
 type FormStatus = "idle" | "loading" | "success" | "error";
 
 export default function Contact() {
+  const { t } = useI18n();
+  const f = t.contact.form;
   const [status, setStatus] = useState<FormStatus>("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
@@ -36,13 +39,15 @@ export default function Contact() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.error || "Failed to send message");
+      if (!response.ok) {
+        // 400 = a required field was empty; anything else is on the server.
+        throw new Error(response.status === 400 ? f.errorRequired : f.errorGeneric);
+      }
       formRef.current?.reset();
       setStatus("success");
     } catch (error) {
       setStatus("error");
-      setErrorMessage(error instanceof Error ? error.message : "Something went wrong");
+      setErrorMessage(error instanceof Error ? error.message : f.errorGeneric);
     }
   };
 
@@ -55,10 +60,10 @@ export default function Contact() {
     <section id="contact" className="section-anchor relative py-24 sm:py-32">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <SectionHeading
-          eyebrow="Contact"
-          title="Let's build something"
-          accent="together"
-          description="Have a project, research collaboration, or opportunity in mind? My inbox is always open."
+          eyebrow={t.contact.eyebrow}
+          title={t.contact.title}
+          accent={t.contact.accent}
+          description={t.contact.description}
           align="center"
         />
 
@@ -78,7 +83,7 @@ export default function Contact() {
                     </span>
                     <div className="min-w-0">
                       <p className="font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground">
-                        {m.label}
+                        {t.contact.methods[m.key]}
                       </p>
                       <p className="truncate text-sm font-medium text-foreground">{m.value}</p>
                     </div>
@@ -88,7 +93,7 @@ export default function Contact() {
                   "group flex items-center gap-4 rounded-2xl border border-border bg-card/50 p-4 backdrop-blur-sm transition-colors hover:border-accent/40";
                 return isLink ? (
                   <a
-                    key={m.label}
+                    key={m.key}
                     href={m.href}
                     target={m.href.startsWith("http") ? "_blank" : undefined}
                     rel="noopener noreferrer"
@@ -97,7 +102,7 @@ export default function Contact() {
                     {inner}
                   </a>
                 ) : (
-                  <div key={m.label} className={className}>
+                  <div key={m.key} className={className}>
                     {inner}
                   </div>
                 );
@@ -113,15 +118,15 @@ export default function Contact() {
                   <span className="grid h-16 w-16 place-items-center rounded-full bg-accent/15 text-accent">
                     <Check className="h-8 w-8" />
                   </span>
-                  <h3 className="mt-5 font-display text-xl font-bold">Message sent!</h3>
+                  <h3 className="mt-5 font-display text-xl font-bold">{f.successTitle}</h3>
                   <p className="mt-2 max-w-sm text-sm text-muted-foreground">
-                    Thanks for reaching out. I&apos;ll get back to you as soon as possible.
+                    {f.successText}
                   </p>
                   <button
                     onClick={() => setStatus("idle")}
                     className="mt-3 inline-flex min-h-11 items-center text-sm font-medium text-accent hover:text-accent-bright"
                   >
-                    Send another message
+                    {f.sendAnother}
                   </button>
                 </div>
               ) : (
@@ -134,37 +139,37 @@ export default function Contact() {
                   <div className="grid gap-4 sm:grid-cols-2">
                     <div>
                       <label className="mb-1.5 block font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground">
-                        Name *
+                        {f.name}
                       </label>
-                      <input name="name" required disabled={status === "loading"} placeholder="Your name" className={inputClass} />
+                      <input name="name" required disabled={status === "loading"} placeholder={f.namePlaceholder} className={inputClass} />
                     </div>
                     <div>
                       <label className="mb-1.5 block font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground">
-                        Email *
+                        {f.email}
                       </label>
-                      <input type="email" name="email" required disabled={status === "loading"} placeholder="you@email.com" className={inputClass} />
+                      <input type="email" name="email" required disabled={status === "loading"} placeholder={f.emailPlaceholder} className={inputClass} />
                     </div>
                   </div>
                   <div>
                     <label className="mb-1.5 block font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground">
-                      Subject
+                      {f.subject}
                     </label>
-                    <input name="subject" disabled={status === "loading"} placeholder="Collaboration opportunity" className={inputClass} />
+                    <input name="subject" disabled={status === "loading"} placeholder={f.subjectPlaceholder} className={inputClass} />
                   </div>
                   <div>
                     <label className="mb-1.5 block font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground">
-                      Message *
+                      {f.message}
                     </label>
-                    <textarea name="message" rows={5} required disabled={status === "loading"} placeholder="Tell me about it..." className={`${inputClass} resize-none`} />
+                    <textarea name="message" rows={5} required disabled={status === "loading"} placeholder={f.messagePlaceholder} className={`${inputClass} resize-none`} />
                   </div>
                   <Button type="submit" variant="primary" size="lg" disabled={status === "loading"} className="w-full sm:w-auto">
                     {status === "loading" ? (
                       <>
-                        <Loader2 className="animate-spin" /> Sending...
+                        <Loader2 className="animate-spin" /> {f.sending}
                       </>
                     ) : (
                       <>
-                        <Send /> Send message
+                        <Send /> {f.send}
                       </>
                     )}
                   </Button>

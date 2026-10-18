@@ -4,7 +4,8 @@ import Image from "next/image";
 import { Mail, MessageCircle, GraduationCap } from "lucide-react";
 import { LinkedInIcon } from "@/components/ui/brand-icons";
 import { useScrollTo } from "@/components/providers/SmoothScroll";
-import { navItems, socialLinks, profile } from "@/lib/portfolio";
+import { getNavItems, socialLinks, profile } from "@/lib/portfolio";
+import { useI18n } from "@/components/providers/LocaleProvider";
 
 const socials = [
   { icon: LinkedInIcon, href: socialLinks.linkedin, label: "LinkedIn" },
@@ -15,6 +16,8 @@ const socials = [
 
 export default function Footer() {
   const scrollTo = useScrollTo();
+  const { t } = useI18n();
+  const navItems = getNavItems(t);
   const go = (href: string) => scrollTo(href.slice(1));
 
   return (
@@ -36,14 +39,14 @@ export default function Footer() {
               {profile.name}
             </button>
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-              {profile.tagline}
+              {t.profile.tagline}
             </p>
           </div>
 
           <div className="flex flex-col gap-6 sm:flex-row sm:gap-16">
             <div>
               <p className="mb-3 font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
-                Navigate
+                {t.footer.navigate}
               </p>
               <ul>
                 {navItems.map((item) => (
@@ -61,7 +64,7 @@ export default function Footer() {
 
             <div>
               <p className="mb-3 font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
-                Connect
+                {t.footer.connect}
               </p>
               <div className="flex gap-2">
                 {socials.map(({ icon: Icon, href, label }) => (
@@ -83,9 +86,9 @@ export default function Footer() {
 
         <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row">
           <p>
-            © {new Date().getFullYear()} {profile.name}. All rights reserved.
+            © {new Date().getFullYear()} {profile.name}. {t.footer.rights}
           </p>
-          <p className="font-mono">Built with Next.js · Three.js · Framer Motion</p>
+          <p className="font-mono">{t.footer.builtWith}</p>
         </div>
       </div>
     </footer>

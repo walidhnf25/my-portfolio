@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { ProjectShot } from "@/components/ui/project-shot";
 import { SectionLink } from "@/components/ui/section-link";
 import { getProjectBySlug, projects, projectSlug } from "@/lib/portfolio";
+import { hasLocale, localePath, locales } from "@/lib/i18n/config";
+import { getDictionary } from "@/lib/i18n";
 
 // Every project is known at build time, so prerender them all. Next 16 passes
 // `params` as a Promise to page, generateMetadata, and generateStaticParams.
@@ -16,23 +18,32 @@ export function generateStaticParams() {
 // shell for a typo'd URL.
 export const dynamicParams = false;
 
-type Params = { params: Promise<{ slug: string }> };
+type Params = { params: Promise<{ lang: string; slug: string }> };
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
-  const { slug } = await params;
-  const project = getProjectBySlug(slug);
-  if (!project) return { title: "Project not found" };
+  const { lang, slug } = await params;
+  if (!hasLocale(lang)) return {};
+  const t = getDictionary(lang);
+  const project = getProjectBySlug(slug, t, lang);
+  if (!project) return { title: t.projects.detail.notFound };
 
   return {
     title: `${project.title} | Walid Hanif Ataullah`,
     description: project.description,
+    alternates: {
+      canonical: localePath(lang, `/projects/${slug}`),
+      languages: Object.fromEntries(locales.map((l) => [l, localePath(l, `/projects/${slug}`)])),
+    },
     openGraph: { title: project.title, description: project.description },
   };
 }
 
 export default async function ProjectDetailPage({ params }: Params) {
-  const { slug } = await params;
-  const project = getProjectBySlug(slug);
+  const { lang, slug } = await params;
+  if (!hasLocale(lang)) notFound();
+  const t = getDictionary(lang);
+  const d = t.projects.detail;
+  const project = getProjectBySlug(slug, t, lang);
   if (!project) notFound();
 
   // First shot headlines the hero; the rest fill the gallery below.
@@ -61,7 +72,7 @@ export default async function ProjectDetailPage({ params }: Params) {
           className="group inline-flex min-h-11 items-center gap-2 font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground transition-colors hover:text-accent"
         >
           <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
-          Back to projects
+          {d.back}
         </SectionLink>
 
         {/* Hero: copy on the left, featured shot on the right ---------- */}
@@ -70,7 +81,7 @@ export default async function ProjectDetailPage({ params }: Params) {
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs uppercase tracking-[0.15em]">
               <span className="text-accent">{project.category}</span>
               <span className="text-border">·</span>
-              <span className="text-muted-foreground">{project.date}</span>
+              <span className="text-muted-foreground">{project.dateLabel}</span>
             </div>
 
             <h1 className="mt-4 font-display text-3xl font-bold leading-tight tracking-tight sm:text-4xl sm:leading-[1.05] lg:text-5xl">
@@ -88,10 +99,10 @@ export default async function ProjectDetailPage({ params }: Params) {
                 rel="noopener noreferrer"
                 className="inline-flex min-h-11 items-center gap-1.5 rounded-full bg-accent px-5 text-sm font-medium text-accent-foreground transition-all hover:-translate-y-0.5 hover:bg-accent-bright"
               >
-                Visit live site <ArrowUpRight className="h-4 w-4" />
+                {d.visit} <ArrowUpRight className="h-4 w-4" />
               </a>
               <span className="font-mono text-xs text-muted-foreground">
-                <span className="text-muted-foreground/60">Role — </span>
+                <span className="text-muted-foreground/60">{d.role}</span>
                 {project.role}
               </span>
             </div>
@@ -103,6 +114,7 @@ export default async function ProjectDetailPage({ params }: Params) {
           <div className="lg:col-span-2">
             <ProjectShot
               caption={heroShot}
+              placeholderLabel={d.placeholder}
               index={0}
               aspect={shotAspect}
               className={isMobile ? "mx-auto w-full max-w-[190px]" : undefined}
@@ -113,7 +125,7 @@ export default async function ProjectDetailPage({ params }: Params) {
         {/* My contribution: a single summary ------------------------- */}
         <section className="mt-16">
           <h2 className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
-            My contribution
+            {d.contribution}
           </h2>
           <div className="mt-5 rounded-2xl border border-border bg-card/50 p-6 backdrop-blur-sm">
             <p className="text-sm leading-relaxed text-muted-foreground">
@@ -125,7 +137,7 @@ export default async function ProjectDetailPage({ params }: Params) {
         {/* Tech stack ------------------------------------------------- */}
         <section className="mt-14">
           <h2 className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
-            Built with
+            {d.builtWith}
           </h2>
           <div className="mt-4 flex flex-wrap gap-2">
             {project.technologies.map((t) => (
@@ -140,12 +152,17 @@ export default async function ProjectDetailPage({ params }: Params) {
         {restShots.length > 0 && (
           <section className="mt-14">
             <h2 className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
-              Gallery
+              {d.gallery}
             </h2>
             <div className={`mt-5 ${galleryClass}`}>
               {restShots.map((caption, i) => (
                 <div key={caption} className={galleryItemClass}>
-                  <ProjectShot caption={caption} index={i + 1} aspect={shotAspect} />
+                  <ProjectShot
+                    caption={caption}
+                    index={i + 1}
+                    aspect={shotAspect}
+                    placeholderLabel={d.placeholder}
+                  />
                 </div>
               ))}
             </div>
@@ -159,7 +176,7 @@ export default async function ProjectDetailPage({ params }: Params) {
             className="group inline-flex min-h-11 items-center gap-2 text-sm font-medium text-accent transition-colors hover:text-accent-bright"
           >
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
-            All projects
+            {d.all}
           </SectionLink>
         </div>
       </div>

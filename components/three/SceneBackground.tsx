@@ -1,8 +1,9 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { useTheme } from "next-themes";
+import { useMounted } from "@/lib/use-mounted";
 
 const Aquarium = dynamic(() => import("./Aquarium"), { ssr: false });
 
@@ -10,22 +11,28 @@ const Aquarium = dynamic(() => import("./Aquarium"), { ssr: false });
 // no antialias, fish still present), "full" everywhere else.
 type Mode = "off" | "lite" | "full";
 
+const REDUCED = "(prefers-reduced-motion: reduce)";
+const PHONE = "(max-width: 640px)";
+
+// Track both queries rather than reading them once, so rotating a phone into
+// landscape upgrades the profile without needing a reload.
+function subscribeMode(onChange: () => void) {
+  const queries = [window.matchMedia(REDUCED), window.matchMedia(PHONE)];
+  queries.forEach((q) => q.addEventListener("change", onChange));
+  return () => queries.forEach((q) => q.removeEventListener("change", onChange));
+}
+
+function modeSnapshot(): Mode {
+  if (window.matchMedia(REDUCED).matches) return "off";
+  return window.matchMedia(PHONE).matches ? "lite" : "full";
+}
+
 export default function SceneBackground() {
   const { resolvedTheme } = useTheme();
-  const [mode, setMode] = useState<Mode>("off");
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    // Track the query rather than reading it once, so rotating a phone into
-    // landscape upgrades the profile without needing a reload.
-    const mq = window.matchMedia("(max-width: 640px)");
-    const apply = () => setMode(mq.matches ? "lite" : "full");
-    apply();
-    mq.addEventListener("change", apply);
-    return () => mq.removeEventListener("change", apply);
-  }, []);
+  // The server cannot know the device, so it renders "off" and the client swaps in
+  // the real mode right after hydration.
+  const mode = useSyncExternalStore<Mode>(subscribeMode, modeSnapshot, () => "off");
+  const mounted = useMounted();
 
   // Before mount the theme is unknown on the server; render the dark default so
   // SSR and first client render agree, then switch after mount.

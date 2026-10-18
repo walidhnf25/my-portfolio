@@ -4,13 +4,17 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import { navItems } from "@/lib/portfolio";
+import { getNavItems, NAV_IDS } from "@/lib/portfolio";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { LanguageSwitcher } from "@/components/ui/language-switcher";
+import { useI18n } from "@/components/providers/LocaleProvider";
 import { useScrollTo } from "@/components/providers/SmoothScroll";
 import { cn } from "@/lib/utils";
 
 export default function Navbar() {
   const scrollTo = useScrollTo();
+  const { t } = useI18n();
+  const navItems = getNavItems(t);
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("home");
@@ -18,7 +22,7 @@ export default function Navbar() {
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 12);
-      const sections = navItems.map((i) => i.href.slice(1));
+      const sections: string[] = [...NAV_IDS];
       // Active = the last section whose top has crossed the vertical centre of
       // the viewport, i.e. the section the centre line currently sits in. A line
       // near the very top (the old 180px) read fine scrolling up but lagged going
@@ -70,7 +74,7 @@ export default function Navbar() {
         <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 pr-14 sm:px-6 lg:px-8">
           <button
             onClick={() => go("#home")}
-            aria-label="Walid Hanif Ataullah, back to top"
+            aria-label={t.common.backToTop}
             className="group flex min-h-11 items-center gap-2 font-display text-lg font-bold tracking-tight"
           >
             <Image
@@ -114,10 +118,11 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center gap-2">
+            <LanguageSwitcher />
             <ThemeToggle />
             <button
               onClick={() => setOpen((v) => !v)}
-              aria-label="Toggle menu"
+              aria-label={t.common.toggleMenu}
               className="grid h-11 w-11 place-items-center rounded-full border border-border text-foreground transition-colors hover:border-accent hover:text-accent lg:hidden"
             >
               {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}

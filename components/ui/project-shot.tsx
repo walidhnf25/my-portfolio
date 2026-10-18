@@ -16,8 +16,11 @@ export function ProjectShot({
   index = 0,
   aspect = "16 / 10",
   className,
+  placeholderLabel = "Placeholder",
 }: {
   caption: string;
+  /** Localized word for "Placeholder". */
+  placeholderLabel?: string;
   index?: number;
   aspect?: string;
   className?: string;
@@ -52,7 +55,7 @@ export function ProjectShot({
         <ImageIcon className="h-6 w-6" />
         <span className="font-mono text-xs uppercase tracking-[0.15em]">{caption}</span>
         <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60">
-          Placeholder
+          {placeholderLabel}
         </span>
       </div>
     </div>

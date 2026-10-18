@@ -7,6 +7,8 @@ import useEmblaCarousel from "embla-carousel-react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight, GalleryHorizontal, X } from "lucide-react";
 import { useLenis } from "lenis/react";
+import { useI18n } from "@/components/providers/LocaleProvider";
+import { fmt } from "@/lib/i18n/config";
 import { cn } from "@/lib/utils";
 
 export type Slide = { src: string; n: number };
@@ -18,6 +20,7 @@ const EMBLA_OPTIONS = { align: "center", loop: false } as const;
  * swipeable viewer over the whole carousel.
  */
 export function SlideViewer({ slides, title }: { slides: Slide[]; title: string }) {
+  const { t } = useI18n();
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
 
@@ -33,7 +36,7 @@ export function SlideViewer({ slides, title }: { slides: Slide[]; title: string 
         ref={triggerRef}
         onClick={() => setOpen(true)}
         aria-haspopup="dialog"
-        aria-label={`Open slides: ${title} (${slides.length} slides)`}
+        aria-label={fmt(t.blog.detail.openSlides, { title, n: slides.length })}
         className="group relative mx-auto block w-full max-w-xs cursor-zoom-in rounded-2xl outline-offset-8 focus-visible:outline-2 focus-visible:outline-accent lg:max-w-sm"
       >
         {/* Two ghost cards fanned behind the cover read as "a deck of slides". */}
@@ -49,7 +52,7 @@ export function SlideViewer({ slides, title }: { slides: Slide[]; title: string 
         <span className="relative block overflow-hidden rounded-2xl border border-border shadow-2xl shadow-accent/10 transition-transform duration-500 group-hover:-translate-y-1.5">
           <Image
             src={slides[0].src}
-            alt={`Title slide: ${title}`}
+            alt={fmt(t.blog.detail.titleSlide, { title })}
             width={1080}
             height={1350}
             preload
@@ -61,7 +64,7 @@ export function SlideViewer({ slides, title }: { slides: Slide[]; title: string 
           <span className="absolute inset-x-0 bottom-0 flex justify-center p-4">
             <span className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-xs font-semibold text-accent-foreground shadow-lg shadow-black/30 transition-transform duration-300 group-hover:scale-105">
               <GalleryHorizontal className="h-4 w-4" />
-              View {slides.length} slides
+              {fmt(t.blog.detail.viewSlides, { n: slides.length })}
             </span>
           </span>
         </span>
@@ -83,6 +86,8 @@ function Viewer({
   title: string;
   onClose: () => void;
 }) {
+  const { t } = useI18n();
+  const v = t.blog.viewer;
   const reduce = useReducedMotion();
   const lenis = useLenis();
   const [emblaRef, emblaApi] = useEmblaCarousel(EMBLA_OPTIONS);
@@ -170,7 +175,7 @@ function Viewer({
       ref={dialogRef}
       role="dialog"
       aria-modal="true"
-      aria-label={`${title} — slides`}
+      aria-label={fmt(v.slidesLabel, { title })}
       data-lenis-prevent
       className="fixed inset-0 z-[90] flex flex-col bg-[#020b10]/90 backdrop-blur-xl"
       initial={{ opacity: 0 }}
@@ -203,7 +208,7 @@ function Viewer({
         <button
           ref={closeRef}
           onClick={onClose}
-          aria-label="Close slides"
+          aria-label={v.close}
           className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-white/20 bg-white/5 text-white transition-colors hover:border-accent hover:text-accent-bright"
         >
           <X className="h-5 w-5" />
@@ -238,7 +243,7 @@ function Viewer({
                 >
                   <Image
                     src={s.src}
-                    alt={`Slide ${s.n} of ${total}`}
+                    alt={fmt(v.slideAlt, { n: s.n, total })}
                     width={1080}
                     height={1350}
                     draggable={false}
@@ -257,7 +262,7 @@ function Viewer({
         <button
           onClick={() => emblaApi?.scrollPrev()}
           disabled={!canPrev}
-          aria-label="Previous slide"
+          aria-label={v.previous}
           className="absolute left-3 top-1/2 hidden h-12 w-12 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-black/40 text-white backdrop-blur-md transition-all hover:scale-105 hover:border-accent hover:text-accent-bright disabled:pointer-events-none disabled:opacity-0 sm:grid"
         >
           <ChevronLeft className="h-6 w-6" />
@@ -265,7 +270,7 @@ function Viewer({
         <button
           onClick={() => emblaApi?.scrollNext()}
           disabled={!canNext}
-          aria-label="Next slide"
+          aria-label={v.next}
           className="absolute right-3 top-1/2 hidden h-12 w-12 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-black/40 text-white backdrop-blur-md transition-all hover:scale-105 hover:border-accent hover:text-accent-bright disabled:pointer-events-none disabled:opacity-0 sm:grid"
         >
           <ChevronRight className="h-6 w-6" />
@@ -289,7 +294,7 @@ function Viewer({
               key={s.n}
               data-thumb
               onClick={() => emblaApi?.scrollTo(i)}
-              aria-label={`Go to slide ${s.n}`}
+              aria-label={fmt(v.goTo, { n: s.n })}
               aria-current={i === index}
               className={cn(
                 "relative h-14 w-11 shrink-0 overflow-hidden rounded-md border transition-all duration-200 sm:h-16 sm:w-[3.25rem]",
@@ -309,9 +314,9 @@ function Viewer({
           ))}
           </div>
         </div>
-        <p className="mt-2 text-center text-[11px] text-white/40 sm:hidden">Swipe to browse</p>
+        <p className="mt-2 text-center text-[11px] text-white/40 sm:hidden">{v.swipeHint}</p>
         <p className="mt-2 hidden text-center text-[11px] text-white/40 sm:block">
-          Drag, use ← → keys, or click a thumbnail · Esc to close
+          {v.desktopHint}
         </p>
       </div>
     </motion.div>,

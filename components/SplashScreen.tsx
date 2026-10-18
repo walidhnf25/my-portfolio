@@ -3,12 +3,15 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { preload } from "react-dom";
 import { useSplashScreen } from "@/hooks/useSplashScreen";
+import { useI18n } from "@/components/providers/LocaleProvider";
+import type { Dictionary } from "@/lib/i18n";
 import {
   POSE_ASPECT,
   POSE_RECTS,
   SPLASH_EXIT_MS,
   SPRITE_SRC,
   poseBackground,
+  type SplashCaptionId,
   type SplashPose,
 } from "@/types/splash";
 
@@ -33,7 +36,14 @@ const MOTES = [
   { left: "12%", top: "48%", size: 2, delay: 3.6, drift: -9 },
 ] as const;
 
+/** The lines of a caption, in the active language. */
+function captionLines(id: SplashCaptionId, t: Dictionary): readonly string[] {
+  if (id === "role") return t.profile.roles;
+  return [t.splash[id]];
+}
+
 export default function SplashScreen() {
+  const { t } = useI18n();
   // React 19's preload: the sprite is the largest paint on this screen, and it
   // is referenced from CSS, where the preload scanner would not find it in time.
   preload(SPRITE_SRC, { as: "image", fetchPriority: "high" });
@@ -201,7 +211,7 @@ export default function SplashScreen() {
                   exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
                   transition={{ duration: 0.45, ease: EASE }}
                 >
-                  {phase.caption.lines.map((line, i) => (
+                  {captionLines(phase.caption.id, t).map((line, i) => (
                     <p
                       key={line}
                       className={
