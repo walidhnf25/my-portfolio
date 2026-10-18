@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import {
   SPLASH_EXIT_AT,
   SPLASH_EXIT_MS,
@@ -58,17 +58,27 @@ export function useSplashGate(): boolean {
  *
  * The result is cached because getSnapshot must be referentially stable:
  * recomputing it on every call would spin React into a loop.
+ *
+ * The cache is per mounted splash, NOT per page load. It used to be module-level,
+ * which is wrong once the layout can remount: the app lives under /[lang], and
+ * switching language changes that segment, so the whole layout (this splash
+ * included) mounts again within the same page load. A module-level cache still
+ * held the first load's answer ("not seen yet, play it"), so every language
+ * switch replayed the splash and locked the scroll. A fresh instance must read
+ * the flag fresh: by then the first instance has set it, so the splash is skipped.
  * ------------------------------------------------------------------ */
 
-let skipCache: boolean | null = null;
-
-function skipSnapshot(): boolean {
-  if (skipCache === null) {
-    skipCache =
+function computeSkip(): boolean {
+  try {
+    return (
       window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
-      sessionStorage.getItem(SEEN_KEY) === "1";
+      sessionStorage.getItem(SEEN_KEY) === "1"
+    );
+  } catch {
+    // Storage blocked (some private modes): treat the visit as new, but still
+    // honour reduced motion, which does not depend on storage.
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   }
-  return skipCache;
 }
 
 /** The inputs cannot change mid-visit, so there is nothing to subscribe to. */
@@ -88,6 +98,12 @@ export interface SplashController {
 
 /** Drives the splash timeline. */
 export function useSplashScreen(): SplashController {
+  // One stable snapshot function per mount: computed on first read, then fixed for
+  // this instance's lifetime (so `sessionStorage` being set below does not flip it).
+  const skipSnapshot = useMemo(() => {
+    let cached: boolean | null = null;
+    return () => (cached ??= computeSkip());
+  }, []);
   const skip = useSyncExternalStore(subscribeSkip, skipSnapshot, skipServerSnapshot);
   const [phaseIndex, setPhaseIndex] = useState(0);
   const [exiting, setExiting] = useState(false);
@@ -128,7 +144,11 @@ export function useSplashScreen(): SplashController {
       return;
     }
 
-    sessionStorage.setItem(SEEN_KEY, "1");
+    try {
+      sessionStorage.setItem(SEEN_KEY, "1");
+    } catch {
+      // Storage blocked: the splash will simply play again on the next visit.
+    }
 
     const queue = timers.current;
     SPLASH_PHASES.forEach((phase, i) => {
