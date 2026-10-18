@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://aboutwal.id"),
   title: "Portfolio | Walid Hanif Ataullah",
   description:
-    "Bachelor's graduate in Software Engineering specializing in Information Technology Adoption, Machine Learning, Deep Learning, and Internet of Things. Explore my research publications, projects, and get in touch.",
+    "Bachelor's graduate in Software Engineering specializing in Information Technology Adoption, Machine Learning, Deep Learning, and Internet of Things. Explore my projects, read my engineering blog, and get in touch.",
   keywords: [
     "Walid Hanif Ataullah",
     "Software Engineer",
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     siteName: "Walid Hanif Ataullah Portfolio",
     title: "Portfolio | Walid Hanif Ataullah",
     description:
-      "Software Engineer & ML/DL Enthusiast focused on Machine Learning, Deep Learning, and IoT. Explore my publications and projects.",
+      "Software Engineer & ML/DL Enthusiast focused on Machine Learning, Deep Learning, and IoT. Explore my projects and engineering blog.",
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Walid Hanif Ataullah" }],
   },
   twitter: {

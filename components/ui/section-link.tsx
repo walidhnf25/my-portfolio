@@ -9,7 +9,7 @@ import { PENDING_SCROLL_KEY } from "@/components/providers/SmoothScroll";
  *
  * Navigating to `/#section` is broken here: the App Router merges the new hash
  * onto whatever hash `/` already carries in history, producing URLs like
- * `/#publications#projects`. So this never puts the section in the URL. It stashes
+ * `/#projects#blog`. So this never puts the section in the URL. It stashes
  * the target and pushes a clean `/`; SmoothScroll's reset reads the stash on mount
  * and scrolls there. Result: a clean URL and an actual smooth scroll to the
  * section — the plain hash link delivered neither.
