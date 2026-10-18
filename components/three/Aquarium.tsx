@@ -90,7 +90,7 @@ function Bubbles({ count, color }: { count: number; color: string }) {
 /* ------------------------------------------------------------------ *
  * Plankton — faint far-back motes drifting, for depth.
  * ------------------------------------------------------------------ */
-function Plankton({ count, color }: { count: number; color: string }) {
+function Plankton({ count, color, day }: { count: number; color: string; day: boolean }) {
   const ref = useRef<THREE.Points>(null);
   const positions = useMemo(() => {
     const arr = new Float32Array(count * 3);
@@ -111,7 +111,59 @@ function Plankton({ count, color }: { count: number; color: string }) {
 
   return (
     <Points ref={ref} positions={positions} stride={3} frustumCulled={false}>
-      <PointMaterial transparent color={color} size={0.05} sizeAttenuation depthWrite={false} opacity={0.28} blending={THREE.AdditiveBlending} />
+      {/* Night: faint glowing motes (additive). Day: additive blending would vanish on a
+          bright background, so the motes become soft white drifting specks instead. */}
+      <PointMaterial
+        transparent
+        color={color}
+        size={day ? 0.07 : 0.05}
+        sizeAttenuation
+        depthWrite={false}
+        opacity={day ? 0.55 : 0.28}
+        blending={day ? THREE.NormalBlending : THREE.AdditiveBlending}
+      />
+    </Points>
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ * Bioluminescence — night only. Soft cyan lights that drift up slowly and
+ * pulse in and out, like glowing plankton disturbed by the current.
+ * ------------------------------------------------------------------ */
+function Glow({ count }: { count: number }) {
+  const ref = useRef<THREE.Points>(null);
+  const { positions, speeds, phase } = useMemo(() => {
+    const positions = new Float32Array(count * 3);
+    const speeds = new Float32Array(count);
+    const phase = new Float32Array(count);
+    for (let i = 0; i < count; i++) {
+      positions[i * 3] = (rand(i * 3 + 211) - 0.5) * 22;
+      positions[i * 3 + 1] = (rand(i * 3 + 223) - 0.5) * 16;
+      positions[i * 3 + 2] = (rand(i * 3 + 237) - 0.5) * 7 - 1.5;
+      speeds[i] = 0.08 + rand(i + 251) * 0.18;
+      phase[i] = rand(i + 263) * Math.PI * 2;
+    }
+    return { positions, speeds, phase };
+  }, [count]);
+
+  useFrame((state, delta) => {
+    const pts = ref.current;
+    if (!pts) return;
+    const arr = pts.geometry.attributes.position.array as Float32Array;
+    const t = state.clock.elapsedTime;
+    for (let i = 0; i < count; i++) {
+      arr[i * 3 + 1] += speeds[i] * delta;
+      arr[i * 3] += Math.sin(t * 0.5 + phase[i]) * 0.004;
+      if (arr[i * 3 + 1] > 8) arr[i * 3 + 1] = -8;
+    }
+    pts.geometry.attributes.position.needsUpdate = true;
+    // One shared material, so the whole swarm breathes together, slowly.
+    (pts.material as THREE.PointsMaterial).opacity = 0.55 + Math.sin(t * 0.9) * 0.25;
+  });
+
+  return (
+    <Points ref={ref} positions={positions} stride={3} frustumCulled={false}>
+      <PointMaterial transparent color="#7df9ff" size={0.2} sizeAttenuation depthWrite={false} opacity={0.6} blending={THREE.AdditiveBlending} />
     </Points>
   );
 }
@@ -203,7 +255,7 @@ function Fish({ seed, body, fin, big = false }: { seed: number; body: string; fi
 /* ------------------------------------------------------------------ *
  * Jellyfish — a translucent bell that pulses and drifts, with a cute face.
  * ------------------------------------------------------------------ */
-function Jellyfish({ seed, color }: { seed: number; color: string }) {
+function Jellyfish({ seed, color, night }: { seed: number; color: string; night: boolean }) {
   const group = useRef<THREE.Group>(null);
   const dome = useRef<THREE.Mesh>(null);
   const { viewport } = useThree();
@@ -212,10 +264,21 @@ function Jellyfish({ seed, color }: { seed: number; color: string }) {
     [seed]
   );
   const bell = useMemo(
-    () => new THREE.MeshStandardMaterial({ color, transparent: true, opacity: 0.42, flatShading: true, emissive: color, emissiveIntensity: 0.3, roughness: 0.4, side: THREE.DoubleSide }),
-    [color]
+    () =>
+      new THREE.MeshStandardMaterial({
+        color,
+        transparent: true,
+        // At night the bell glows from within: more emissive, a touch more opaque.
+        opacity: night ? 0.55 : 0.42,
+        flatShading: true,
+        emissive: color,
+        emissiveIntensity: night ? 1.1 : 0.3,
+        roughness: 0.4,
+        side: THREE.DoubleSide,
+      }),
+    [color, night]
   );
-  const tentacleMat = useMemo(() => new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0.32 }), [color]);
+  const tentacleMat = useMemo(() => new THREE.MeshBasicMaterial({ color, transparent: true, opacity: night ? 0.55 : 0.32 }), [color, night]);
   const tentacles = useMemo(() => Array.from({ length: 6 }, (_, i) => (i / 6) * Math.PI * 2), []);
   const target = useRef(new THREE.Vector3());
   const ready = useRef(false);
@@ -590,8 +653,11 @@ const PROFILE = {
   lite: { bubbles: 50, plankton: 180, smallFish: 2, jelly: 1, turtle: 1, starfish: 1, seahorse: 1, seaweed: 2, dpr: [1, 1], antialias: false, power: "default" },
 } as const;
 
-export default function Aquarium({ accent = "#2dd4bf", bubble = "#bff5ef", lite = false }: { accent?: string; bubble?: string; lite?: boolean }) {
+export default function Aquarium({ day = false, lite = false }: { day?: boolean; lite?: boolean }) {
   const p = lite ? PROFILE.lite : PROFILE.full;
+  // By day: white motes and bubbles, a bright warm sun, and a cool fill from the water.
+  const accent = day ? "#ffffff" : "#2dd4bf";
+  const bubble = day ? "#ffffff" : "#bff5ef";
 
   useEffect(() => {
     const fire = () => window.dispatchEvent(new Event("resize"));
@@ -612,11 +678,18 @@ export default function Aquarium({ accent = "#2dd4bf", bubble = "#bff5ef", lite 
 
   return (
     <Canvas camera={{ position: [0, 0, 10], fov: 52 }} dpr={p.dpr as [number, number]} gl={{ antialias: p.antialias, alpha: true, powerPreference: p.power }}>
-      <ambientLight intensity={0.75} />
-      <directionalLight position={[3, 6, 5]} intensity={1.1} />
-      <pointLight position={[-5, -2, 4]} intensity={0.4} color={accent} />
+      {/* Day: bright warm sun. Night: cool moonlight from above-left, a blue ambient
+          fill, and a teal glow from below (the plankton lighting the fish). */}
+      <ambientLight intensity={day ? 1 : 0.8} color={day ? "#ffffff" : "#9bb9ee"} />
+      <directionalLight
+        position={day ? [4, 8, 5] : [-3, 7, 4]}
+        intensity={day ? 1.5 : 1.25}
+        color={day ? "#fff6dc" : "#bdd2ff"}
+      />
+      <pointLight position={[-5, -2, 4]} intensity={day ? 0.3 : 0.7} color={day ? "#8fe3f0" : accent} />
 
-      <Plankton count={p.plankton} color={accent} />
+      <Plankton count={p.plankton} color={accent} day={day} />
+      {!day && <Glow count={Math.round(p.plankton / 6)} />}
       <Bubbles count={p.bubbles} color={bubble} />
 
       {/* The diver chases the pointer — the interactive centerpiece. */}
@@ -630,7 +703,7 @@ export default function Aquarium({ accent = "#2dd4bf", bubble = "#bff5ef", lite 
         <Fish key={`f${i}`} seed={i * 7 + 3} body={SMALL_FISH_COLORS[i % SMALL_FISH_COLORS.length]} fin="#ffffff" />
       ))}
       {Array.from({ length: p.jelly }, (_, i) => (
-        <Jellyfish key={`j${i}`} seed={i * 11 + 21} color={JELLY_COLORS[i % JELLY_COLORS.length]} />
+        <Jellyfish key={`j${i}`} seed={i * 11 + 21} color={JELLY_COLORS[i % JELLY_COLORS.length]} night={!day} />
       ))}
       {Array.from({ length: p.turtle }, (_, i) => (
         <Turtle key={`t${i}`} seed={i * 13 + 41} />
@@ -644,6 +717,7 @@ export default function Aquarium({ accent = "#2dd4bf", bubble = "#bff5ef", lite 
       {Array.from({ length: p.seaweed }, (_, i) => (
         <Seaweed key={`w${i}`} seed={i * 23 + 103} color={i % 2 ? "#2f9e6f" : "#3fae7f"} />
       ))}
+
     </Canvas>
   );
 }

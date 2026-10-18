@@ -2,6 +2,9 @@
 
 /* next-themes toggles the `dark` class on <html>. Drive Tailwind's dark variant off it. */
 @custom-variant dark (&:is(.dark *));
+/* ...and the same for light, so the scene can swap whole layers with plain CSS
+   (no flash of the wrong theme while React hydrates). */
+@custom-variant light (&:is(.light *));
 
 @theme inline {
   --color-background: var(--background);
@@ -29,40 +32,45 @@
   --animate-aurora: aurora 60s linear infinite;
 }
 
-/* ---------- Dark (default): deep water ---------- */
+/* ---------- Dark (default): the sea at night ----------
+   Navy water under moonlight, with bioluminescent teal as the accent: the glow of
+   plankton, which is also why the accent is the brightest thing on the page. */
 :root,
 .dark {
-  --background: #061820;     /* deep ocean */
-  --foreground: #e4f4f2;
-  --card: #0a2531;
-  --card-foreground: #e4f4f2;
-  --muted: #0e2c39;
-  --muted-foreground: #83abb1;
-  --border: #17414e;
-  --input: #0c2833;
+  --background: #050f1d;     /* night water; the scene fades into this */
+  --foreground: #e4f1f4;
+  --card: #0a1d30;
+  --card-foreground: #e4f1f4;
+  --muted: #0e2438;
+  --muted-foreground: #8aaabd;
+  --border: #173a52;
+  --input: #0b2033;
   --ring: #2dd4bf;
 
-  --accent: #2dd4bf;         /* aquatic teal */
+  --accent: #2dd4bf;         /* bioluminescent teal */
   --accent-bright: #5eead4;  /* glow / hover */
   --accent-foreground: #03181e;
 
   color-scheme: dark;
 }
 
-/* ---------- Light: shallow water ---------- */
+/* ---------- Light: sunlit shallows ----------
+   The page sits on bright turquoise water (see SceneBackground), not on white.
+   Text and accent are therefore dark and deep enough to read on that blue:
+   --foreground ~11:1, --muted-foreground ~5:1, --accent ~5:1 on the water. */
 .light {
-  --background: #eef8f8;
-  --foreground: #0a2a30;
-  --card: #ffffff;
-  --card-foreground: #0a2a30;
-  --muted: #dcefef;
-  --muted-foreground: #4f747a;
-  --border: #c9e4e5;
+  --background: #86cfe3;     /* the deepest tone of the day gradient; the scene fades into it */
+  --foreground: #072a33;
+  --card: #ffffff;           /* cards are used at 50-60% alpha: frosted glass over the water */
+  --card-foreground: #072a33;
+  --muted: #c4e6ef;
+  --muted-foreground: #2c5560;
+  --border: #7ab8ca;
   --input: #ffffff;
-  --ring: #0d9488;
+  --ring: #075a68;
 
-  --accent: #0d9488;         /* deeper teal for contrast on light */
-  --accent-bright: #14b8a6;
+  --accent: #075a68;         /* deep ocean teal: readable on blue, unlike the old bright teal */
+  --accent-bright: #0b7a8d;
   --accent-foreground: #ffffff;
 
   color-scheme: light;
@@ -200,9 +208,40 @@ html {
   50% { transform: translateX(4%) skewX(-8deg); opacity: 0.85; }
   100% { transform: translateX(-4%) skewX(-8deg); opacity: 0.5; }
 }
+/* Night: the creatures sit deeper in the dark, but stay readable. */
 @keyframes water-breathe {
-  0%, 100% { opacity: 0.55; }
-  50% { opacity: 0.8; }
+  0%, 100% { opacity: 0.72; }
+  50% { opacity: 0.95; }
+}
+/* By day the water is clear and the fish are vivid: only a slight shimmer. */
+@keyframes water-breathe-day {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 1; }
+}
+/* Moonlight rippling through the surface: slower and gentler than the sun. */
+@keyframes moon-glow {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+/* Sunlight pulsing through the surface. */
+@keyframes sun-pulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+/* The day/night cross-fade (see ThemeToggle): slow enough to feel like the sun
+   going down rather than a flash. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.75s;
+  animation-timing-function: ease-in-out;
+}
+
+.aquarium-layer {
+  animation: water-breathe 9s ease-in-out infinite;
+}
+.light .aquarium-layer {
+  animation-name: water-breathe-day;
 }
 
 @media (prefers-reduced-motion: reduce) {

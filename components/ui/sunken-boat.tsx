@@ -83,7 +83,7 @@ export function SunkenBoat() {
       {/* Seabed dune */}
       <path
         d="M0 300 L0 244 Q92 216 172 248 Q246 276 320 242 L320 300 Z"
-        className="fill-muted stroke-border"
+        className="fill-muted stroke-border light:fill-[#f2e4b8] light:stroke-[#c7ad72]"
         strokeWidth={1.5}
         strokeLinejoin="round"
       />
@@ -95,14 +95,14 @@ export function SunkenBoat() {
         [268, 258],
         [150, 280],
       ].map(([x, y], i) => (
-        <circle key={i} cx={x} cy={y} r={2} className="fill-accent" opacity={0.3} />
+        <circle key={i} cx={x} cy={y} r={2} className="fill-accent light:fill-[#b59a5e]" opacity={0.45} />
       ))}
 
       {/* Seaweed clusters */}
       <g className="weed" style={{ transformBox: "fill-box" }}>
         <path
           d="M58 260 Q48 232 60 214 Q70 200 62 184"
-          className="stroke-accent"
+          className="stroke-accent light:stroke-[#2f9e6f]"
           strokeWidth={4}
           strokeLinecap="round"
           fill="none"
@@ -110,7 +110,7 @@ export function SunkenBoat() {
         />
         <path
           d="M70 262 Q78 240 70 220"
-          className="stroke-accent"
+          className="stroke-accent light:stroke-[#2f9e6f]"
           strokeWidth={3}
           strokeLinecap="round"
           fill="none"
@@ -120,7 +120,7 @@ export function SunkenBoat() {
       <g className="weed" style={{ transformBox: "fill-box" }}>
         <path
           d="M272 250 Q282 226 270 206 Q262 192 272 178"
-          className="stroke-accent"
+          className="stroke-accent light:stroke-[#2f9e6f]"
           strokeWidth={4}
           strokeLinecap="round"
           fill="none"
@@ -131,14 +131,14 @@ export function SunkenBoat() {
       {/* The wreck — listing to one side, resting on the dune. */}
       <g id="wreck" transform="translate(160 214) rotate(-9)">
         {/* mast: a snapped pole with a gap, leaning */}
-        <line x1={-4} y1={-6} x2={-12} y2={-42} className="stroke-border" strokeWidth={5} strokeLinecap="round" />
-        <line x1={-14} y1={-52} x2={-18} y2={-74} className="stroke-border" strokeWidth={4} strokeLinecap="round" />
+        <line x1={-4} y1={-6} x2={-12} y2={-42} className="stroke-border light:stroke-[#7d5632]" strokeWidth={5} strokeLinecap="round" />
+        <line x1={-14} y1={-52} x2={-18} y2={-74} className="stroke-border light:stroke-[#7d5632]" strokeWidth={4} strokeLinecap="round" />
         {/* yard (cross-spar) */}
-        <line x1={-30} y1={-40} x2={8} y2={-46} className="stroke-border" strokeWidth={3} strokeLinecap="round" />
+        <line x1={-30} y1={-40} x2={8} y2={-46} className="stroke-border light:stroke-[#7d5632]" strokeWidth={3} strokeLinecap="round" />
         {/* tattered sail hanging off the yard */}
         <path
           d="M-28 -40 L4 -45 L2 -20 L-8 -26 L-14 -16 L-22 -24 L-28 -14 Z"
-          className="fill-foreground"
+          className="fill-foreground light:fill-white"
           opacity={0.14}
           stroke="none"
         />
@@ -147,13 +147,13 @@ export function SunkenBoat() {
         <path
           d="M-62 -8 L-48 -8 L-42 -17 L-30 -8 L-14 -15 L2 -8 L18 -16 L34 -8 L50 -14 L62 -8
              Q56 22 0 27 Q-56 22 -62 -8 Z"
-          className="fill-muted stroke-border"
+          className="fill-muted stroke-border light:fill-[#c79a68] light:stroke-[#7d5632]"
           strokeWidth={2}
           strokeLinejoin="round"
         />
         {/* plank seams */}
-        <path d="M-58 2 Q0 16 58 2" className="stroke-border" strokeWidth={1.5} fill="none" opacity={0.6} />
-        <path d="M-52 12 Q0 24 52 12" className="stroke-border" strokeWidth={1.5} fill="none" opacity={0.5} />
+        <path d="M-58 2 Q0 16 58 2" className="stroke-border light:stroke-[#7d5632]" strokeWidth={1.5} fill="none" opacity={0.6} />
+        <path d="M-52 12 Q0 24 52 12" className="stroke-border light:stroke-[#7d5632]" strokeWidth={1.5} fill="none" opacity={0.5} />
 
         {/* portholes, faintly glowing */}
         <circle cx={-26} cy={2} r={5} className="fill-accent" opacity={0.35} />
@@ -164,11 +164,11 @@ export function SunkenBoat() {
         {/* breach — a dark hole in the hull */}
         <path
           d="M28 2 Q40 -4 48 6 Q46 18 34 18 Q26 12 28 2 Z"
-          className="fill-background stroke-border"
+          className="fill-background stroke-border light:fill-[#4a3320] light:stroke-[#7d5632]"
           strokeWidth={1.5}
         />
         {/* bowsprit at the prow */}
-        <line x1={58} y1={-6} x2={78} y2={-16} className="stroke-border" strokeWidth={3} strokeLinecap="round" />
+        <line x1={58} y1={-6} x2={78} y2={-16} className="stroke-border light:stroke-[#7d5632]" strokeWidth={3} strokeLinecap="round" />
       </g>
 
       {/* Bubbles rising from the wreck */}

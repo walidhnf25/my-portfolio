@@ -170,6 +170,43 @@ function ambient(g: Game, dt: number, reduce: boolean) {
 
 /* ------------------------------ drawing ----------------------------- */
 
+/** Colours for the canvas. Dark is the deep sea at night; light is shallow water by day. */
+interface Palette {
+  night: boolean; // night: moon and stars; day: the sun
+  skyTop: string; skyBottom: string;
+  waterTop: string; waterBottom: string;
+  tint: string; // translucent water drawn over the dolphin's submerged half
+  shaft: string; bubble: string; surface: string; spray: string;
+  netMesh: string; netPole: string;
+  dolphin: { fluke: string; body: string; belly: string; facet: string; flipper: string; eye: string };
+}
+
+const DARK: Palette = {
+  night: true,
+  skyTop: "#060e22", skyBottom: "#123461",
+  waterTop: "#0f5f7e", waterBottom: "#050f1d",
+  tint: "rgba(8, 60, 90, 0.42)",
+  shaft: "rgba(94, 234, 212, 0.06)", bubble: "rgba(190, 240, 245, 0.35)",
+  surface: "rgba(94, 234, 212, 0.75)", spray: "rgba(235, 250, 252, 0.8)",
+  netMesh: "rgba(235, 245, 248, 0.45)", netPole: "#d8c28a",
+  dolphin: { fluke: "#1c6378", body: "#3a9bb2", belly: "#c4ecf0", facet: "#5cc0d3", flipper: "#2a7f96", eye: "#06222c" },
+};
+
+const LIGHT: Palette = {
+  night: false,
+  skyTop: "#cfeef2", skyBottom: "#eefafa",
+  waterTop: "#4fc1c4", waterBottom: "#1f7f93",
+  tint: "rgba(18, 110, 130, 0.30)",
+  shaft: "rgba(255, 255, 255, 0.20)", bubble: "rgba(255, 255, 255, 0.55)",
+  surface: "rgba(255, 255, 255, 0.9)", spray: "rgba(22, 120, 140, 0.85)",
+  netMesh: "rgba(20, 70, 85, 0.5)", netPole: "#a07f3c",
+  dolphin: { fluke: "#15566b", body: "#2a86a0", belly: "#e8f8fa", facet: "#4db3c8", flipper: "#1f6f86", eye: "#06222c" },
+};
+
+/** next-themes puts "light" or "dark" on <html>; dark is the site default. */
+const currentPalette = (): Palette =>
+  document.documentElement.classList.contains("light") ? LIGHT : DARK;
+
 const waveY = (x: number, t: number) =>
   SURFACE + Math.sin(x * 0.03 + t * 2) * 2.4 + Math.sin(x * 0.071 - t * 1.3) * 1.3;
 
@@ -196,7 +233,7 @@ const BACK_FACET = [[14, -10], [-2, -12], [4, -4]];
 const DORSAL = [[-2, -11], [-13, -24], [-15, -9]];
 const FLIPPER = [[8, 6], [-3, 17], [-1, 5]];
 
-function drawDolphin(ctx: CanvasRenderingContext2D, x: number, y: number, angle: number, t: number) {
+function drawDolphin(ctx: CanvasRenderingContext2D, x: number, y: number, angle: number, t: number, c: Palette["dolphin"]) {
   ctx.save();
   ctx.translate(x, y);
   ctx.rotate(angle);
@@ -205,17 +242,17 @@ function drawDolphin(ctx: CanvasRenderingContext2D, x: number, y: number, angle:
   ctx.save();
   ctx.translate(-30, -1);
   ctx.rotate(Math.sin(t * 10) * 0.3);
-  poly(ctx, [[0, 0], [-13, -9], [-9, 0], [-13, 8]], "#1c6378");
+  poly(ctx, [[0, 0], [-13, -9], [-9, 0], [-13, 8]], c.fluke);
   ctx.restore();
 
-  poly(ctx, DORSAL, "#1c6378");
-  poly(ctx, BODY, "#3a9bb2");
-  poly(ctx, BELLY, "#c4ecf0");
-  poly(ctx, BACK_FACET, "#5cc0d3");
-  poly(ctx, FLIPPER, "#2a7f96");
+  poly(ctx, DORSAL, c.fluke);
+  poly(ctx, BODY, c.body);
+  poly(ctx, BELLY, c.belly);
+  poly(ctx, BACK_FACET, c.facet);
+  poly(ctx, FLIPPER, c.flipper);
 
   // eye
-  ctx.fillStyle = "#06222c";
+  ctx.fillStyle = c.eye;
   ctx.beginPath();
   ctx.arc(21, -3, 1.7, 0, Math.PI * 2);
   ctx.fill();
@@ -232,9 +269,9 @@ function drawBuoy(ctx: CanvasRenderingContext2D, x: number, y: number, h: number
   ctx.fillRect(x + w / 2 - 1, y - h - 7, 2, 8);
 }
 
-function drawNet(ctx: CanvasRenderingContext2D, x: number, y: number, h: number, w: number) {
+function drawNet(ctx: CanvasRenderingContext2D, x: number, y: number, h: number, w: number, p: Palette) {
   // mesh
-  ctx.strokeStyle = "rgba(235, 245, 248, 0.45)";
+  ctx.strokeStyle = p.netMesh;
   ctx.lineWidth = 1;
   ctx.beginPath();
   for (let i = 0; i <= 4; i++) {
@@ -249,25 +286,108 @@ function drawNet(ctx: CanvasRenderingContext2D, x: number, y: number, h: number,
   }
   ctx.stroke();
   // poles
-  ctx.fillStyle = "#d8c28a";
+  ctx.fillStyle = p.netPole;
   ctx.fillRect(x, y - h - 2, 3, h + 8);
   ctx.fillRect(x + w - 3, y - h - 2, 3, h + 8);
 }
 
+// Fixed star positions (x, y, size, twinkle phase): deterministic, so they never jump.
+const STARS = Array.from({ length: 26 }, (_, i) => {
+  const r = (n: number) => {
+    const v = Math.sin(i * 12.9898 + n * 78.233) * 43758.5453;
+    return v - Math.floor(v);
+  };
+  return { x: r(1) * W, y: r(2) * (SURFACE - 26), s: 0.6 + r(3) * 1.1, ph: r(4) * Math.PI * 2 };
+});
+
+function drawNightSky(ctx: CanvasRenderingContext2D, t: number) {
+  for (const st of STARS) {
+    ctx.globalAlpha = 0.35 + 0.45 * (0.5 + 0.5 * Math.sin(t * 1.6 + st.ph));
+    ctx.fillStyle = "#e8f0ff";
+    ctx.beginPath();
+    ctx.arc(st.x, st.y, st.s, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  // Moon, with a soft halo.
+  const mx = W - 78;
+  const my = 38;
+  const halo = ctx.createRadialGradient(mx, my, 6, mx, my, 46);
+  halo.addColorStop(0, "rgba(190, 215, 255, 0.45)");
+  halo.addColorStop(1, "rgba(190, 215, 255, 0)");
+  ctx.fillStyle = halo;
+  ctx.fillRect(mx - 50, my - 50, 100, 100);
+  // Crescent: clip out a bite (a hole in the clip region, via the opposite winding
+  // direction), then fill the full disc. Painting a "sky-coloured" circle over the
+  // moon would leave a visible dark disc against the halo.
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(0, 0, W, H);
+  ctx.arc(mx + 6, my - 3, 11, 0, Math.PI * 2, true);
+  ctx.clip();
+  ctx.fillStyle = "#eef3ff";
+  ctx.beginPath();
+  ctx.arc(mx, my, 13, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+/** Day sky: the sun sits where the moon does at night, with a warm halo and slowly turning rays. */
+function drawDaySky(ctx: CanvasRenderingContext2D, t: number) {
+  const sx = W - 78;
+  const sy = 38;
+
+  const halo = ctx.createRadialGradient(sx, sy, 8, sx, sy, 62);
+  halo.addColorStop(0, "rgba(255, 226, 120, 0.6)");
+  halo.addColorStop(1, "rgba(255, 226, 120, 0)");
+  ctx.fillStyle = halo;
+  ctx.fillRect(sx - 64, sy - 64, 128, 128);
+
+  // Rays: 12 short tapered spokes, turning slowly.
+  ctx.save();
+  ctx.translate(sx, sy);
+  ctx.rotate(t * 0.12);
+  ctx.fillStyle = "rgba(255, 196, 61, 0.85)";
+  for (let i = 0; i < 12; i++) {
+    ctx.rotate(Math.PI / 6);
+    ctx.beginPath();
+    ctx.moveTo(-2, -19);
+    ctx.lineTo(2, -19);
+    ctx.lineTo(0.8, -27);
+    ctx.lineTo(-0.8, -27);
+    ctx.closePath();
+    ctx.fill();
+  }
+  ctx.restore();
+
+  // Disc, with a paler core so it reads as lit rather than flat.
+  const disc = ctx.createRadialGradient(sx - 3, sy - 3, 2, sx, sy, 15);
+  disc.addColorStop(0, "#fff3b0");
+  disc.addColorStop(1, "#ffc83d");
+  ctx.fillStyle = disc;
+  ctx.beginPath();
+  ctx.arc(sx, sy, 15, 0, Math.PI * 2);
+  ctx.fill();
+}
+
 function draw(ctx: CanvasRenderingContext2D, g: Game) {
   const t = g.time;
+  const p = currentPalette();
 
   // Sky
   const sky = ctx.createLinearGradient(0, 0, 0, SURFACE);
-  sky.addColorStop(0, "#082029");
-  sky.addColorStop(1, "#0f4150");
+  sky.addColorStop(0, p.skyTop);
+  sky.addColorStop(1, p.skyBottom);
   ctx.fillStyle = sky;
   ctx.fillRect(0, 0, W, H);
+  if (p.night) drawNightSky(ctx, t);
+  else drawDaySky(ctx, t);
 
   // Water body
   const water = ctx.createLinearGradient(0, SURFACE, 0, H);
-  water.addColorStop(0, "#127184");
-  water.addColorStop(1, "#06222c");
+  water.addColorStop(0, p.waterTop);
+  water.addColorStop(1, p.waterBottom);
   waterPath(ctx, t);
   ctx.fillStyle = water;
   ctx.fill();
@@ -276,7 +396,7 @@ function draw(ctx: CanvasRenderingContext2D, g: Game) {
   ctx.save();
   waterPath(ctx, t);
   ctx.clip();
-  ctx.fillStyle = "rgba(94, 234, 212, 0.06)";
+  ctx.fillStyle = p.shaft;
   for (let i = 0; i < 4; i++) {
     const sx = ((i * 170 + t * 14) % (W + 120)) - 60;
     ctx.beginPath();
@@ -290,7 +410,7 @@ function draw(ctx: CanvasRenderingContext2D, g: Game) {
   ctx.restore();
 
   // Bubbles
-  ctx.fillStyle = "rgba(190, 240, 245, 0.35)";
+  ctx.fillStyle = p.bubble;
   for (const b of g.bubbles) {
     ctx.beginPath();
     ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
@@ -300,7 +420,7 @@ function draw(ctx: CanvasRenderingContext2D, g: Game) {
   // Obstacles, sitting on the swell
   for (const o of g.obstacles) {
     const y = waveY(o.x + o.w / 2, t) + 2;
-    if (o.kind === "net") drawNet(ctx, o.x, y, o.h, o.w);
+    if (o.kind === "net") drawNet(ctx, o.x, y, o.h, o.w, p);
     else if (o.kind === "buoy") drawBuoy(ctx, o.x, y, o.h, o.w);
     else {
       drawBuoy(ctx, o.x, y, o.h, 20);
@@ -312,11 +432,11 @@ function draw(ctx: CanvasRenderingContext2D, g: Game) {
   const swimming = g.h <= 0;
   const bob = swimming ? Math.sin(t * 4) * 1.6 : 0;
   const angle = swimming ? Math.cos(DX * 0.03 + t * 2) * 0.06 : Math.max(-0.7, Math.min(0.75, -g.vh / 900));
-  drawDolphin(ctx, DX, SURFACE - g.h + bob, angle, t + g.dist * 0.01);
+  drawDolphin(ctx, DX, SURFACE - g.h + bob, angle, t + g.dist * 0.01, p.dolphin);
 
   // Front water: tints whatever is below the line, so the dolphin reads as half-submerged.
   waterPath(ctx, t);
-  ctx.fillStyle = "rgba(10, 80, 96, 0.42)";
+  ctx.fillStyle = p.tint;
   ctx.fill();
 
   // Surface line
@@ -325,12 +445,12 @@ function draw(ctx: CanvasRenderingContext2D, g: Game) {
     if (x) ctx.lineTo(x, waveY(x, t));
     else ctx.moveTo(x, waveY(x, t));
   }
-  ctx.strokeStyle = "rgba(94, 234, 212, 0.75)";
+  ctx.strokeStyle = p.surface;
   ctx.lineWidth = 1.5;
   ctx.stroke();
 
   // Spray
-  ctx.fillStyle = "rgba(235, 250, 252, 0.8)";
+  ctx.fillStyle = p.spray;
   for (const d of g.drops) {
     ctx.globalAlpha = Math.min(1, d.life * 2.5);
     ctx.beginPath();
@@ -478,16 +598,16 @@ export function DolphinGame() {
   };
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-border bg-[#06222c] shadow-xl shadow-accent/5">
+    <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-xl shadow-accent/5">
       {/* Header */}
-      <div className="flex items-center justify-between gap-3 border-b border-white/10 bg-white/[0.03] px-4 py-2.5">
-        <span className="whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.14em] text-teal-200/80 sm:text-xs sm:tracking-[0.18em]">
+      <div className="flex items-center justify-between gap-3 border-b border-border bg-muted/40 px-4 py-2.5">
+        <span className="whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.14em] text-accent sm:text-xs sm:tracking-[0.18em]">
           {g.title}
         </span>
-        <span className="whitespace-nowrap font-mono text-[10px] tracking-wide text-slate-400 sm:text-[11px] sm:tracking-wider">
-          {g.score} <span ref={scoreRef} className="text-teal-200">00000</span>
-          <span className="mx-1.5 text-slate-600 sm:mx-2">·</span>
-          {g.best} <span ref={bestRef} className="text-teal-200">00000</span>
+        <span className="whitespace-nowrap font-mono text-[10px] tracking-wide text-muted-foreground sm:text-[11px] sm:tracking-wider">
+          {g.score} <span ref={scoreRef} className="text-accent">00000</span>
+          <span className="mx-1.5 text-border sm:mx-2">·</span>
+          {g.best} <span ref={bestRef} className="text-accent">00000</span>
         </span>
       </div>
 
@@ -512,9 +632,9 @@ export function DolphinGame() {
           <div className="pointer-events-none absolute inset-x-0 top-0 grid h-[64%] place-items-center px-3 text-center">
             <div>
               {status === "over" && (
-                <p className="font-display text-lg font-bold text-white sm:text-2xl">{g.over}</p>
+                <p className="font-display text-lg font-bold text-slate-800 dark:text-white sm:text-2xl">{g.over}</p>
               )}
-              <p className="mt-1 rounded-full bg-black/35 px-3 py-1 font-mono text-[10px] uppercase leading-snug tracking-[0.1em] text-teal-100 sm:px-4 sm:py-1.5 sm:text-xs sm:tracking-[0.14em]">
+              <p className="mt-1 rounded-full bg-white/75 px-3 py-1 font-mono text-[10px] uppercase leading-snug tracking-[0.1em] text-teal-900 shadow-sm dark:bg-black/35 dark:text-teal-100 dark:shadow-none sm:px-4 sm:py-1.5 sm:text-xs sm:tracking-[0.14em]">
                 {status === "idle" ? g.start : status === "paused" ? g.paused : g.again}
               </p>
             </div>

@@ -71,7 +71,7 @@ export default function Navbar() {
           // button does not dim along with the page behind it.
           "fixed inset-x-0 top-0 z-[75] transition-all duration-300",
           scrolled
-            ? "border-b border-border bg-background/70 backdrop-blur-xl"
+            ? "border-b border-border bg-background/70 backdrop-blur-xl light:bg-white/55"
             : "border-b border-transparent bg-transparent"
         )}
       >
