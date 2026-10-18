@@ -28,8 +28,6 @@ export type PostMeta = {
   slug: string;
   /** ISO date (YYYY-MM-DD). */
   date: string;
-  /** Number of slides in the carousel; files are slide-01..slide-NN. */
-  slideCount: number;
   tags: string[];
 };
 

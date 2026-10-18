@@ -4,13 +4,10 @@ import { ArrowLeft, Clock, MessageCircleQuestion } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { SectionLink } from "@/components/ui/section-link";
 import { Blocks } from "@/components/blog/post-body";
-import { SlideViewer } from "@/components/blog/slide-viewer";
 import { Toc } from "@/components/blog/toc";
 import {
   formatPostDate,
   getPostBySlug,
-  postCover,
-  postSlides,
   postSlugs,
   readingMinutes,
 } from "@/lib/blog";
@@ -48,7 +45,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
       publishedTime: post.date,
       authors: ["Walid Hanif Ataullah"],
       tags: post.tags,
-      images: [{ url: postCover(post), width: 1080, height: 1350, alt: post.title }],
+      images: [{ url: "/og-image.png", width: 1200, height: 630, alt: post.title }],
     },
   };
 }
@@ -87,9 +84,9 @@ export default async function BlogPostPage({ params }: Params) {
           {d.back}
         </SectionLink>
 
-        {/* Hero: copy on the left, title slide on the right ------------ */}
-        <header className="mt-8 grid items-center gap-8 lg:grid-cols-5 lg:gap-12">
-          <div className="lg:col-span-3">
+        {/* Header -------------------------------------------------------- */}
+        <header className="mt-8">
+          <div className="max-w-4xl">
             <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground">
               <time dateTime={post.date} className="text-accent">
                 {formatPostDate(post.date, lang)}
@@ -118,9 +115,6 @@ export default async function BlogPostPage({ params }: Params) {
             </div>
           </div>
 
-          <div className="lg:col-span-2">
-            <SlideViewer slides={postSlides(post)} title={post.title} />
-          </div>
         </header>
 
         {/* Body: article on the left, sticky contents on the right ---- */}

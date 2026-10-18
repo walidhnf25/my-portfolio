@@ -55,8 +55,8 @@ export default async function BlogIndexPage({ params }: PageProps<"/[lang]/blog"
         </header>
 
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {posts.map((post, i) => (
-            <PostCard key={post.slug} post={post} locale={lang} labels={t} priority={i === 0} />
+          {posts.map((post) => (
+            <PostCard key={post.slug} post={post} locale={lang} labels={t} />
           ))}
         </div>
       </div>

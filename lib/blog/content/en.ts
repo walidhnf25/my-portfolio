@@ -1,5 +1,4 @@
 // English post content. Same slugs and structure as content/id.ts.
-// The slide images are the original (Indonesian) carousel and are not translated.
 
 import type { PostContent } from "../types";
 

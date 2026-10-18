@@ -23,17 +23,6 @@ export function getPostBySlug(slug: string, locale: Locale): Post | undefined {
 /** Slugs are shared by every locale, so static params are too. */
 export const postSlugs = postMetas.map((m) => m.slug);
 
-export function postCover(post: Pick<Post, "slug">): string {
-  return `/blog/${post.slug}/slide-01.png`;
-}
-
-export function postSlides(post: Pick<Post, "slug" | "slideCount">): { src: string; n: number }[] {
-  return Array.from({ length: post.slideCount }, (_, i) => ({
-    n: i + 1,
-    src: `/blog/${post.slug}/slide-${String(i + 1).padStart(2, "0")}.png`,
-  }));
-}
-
 /** "17 Oct 2026" / "17 Okt 2026". Fixed locale and UTC so server and client agree. */
 export function formatPostDate(iso: string, locale: Locale): string {
   return new Date(`${iso}T00:00:00Z`).toLocaleDateString(intlLocale[locale], {
